@@ -4,9 +4,13 @@ from django.db import models
 #'id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID'))
 
 
+class Carrera(models.Model):
+    nombre      = models.CharField(max_length=50)
+
+
 class Estudiante(models.Model):
-    id          = models.BigAutoField(blank=True, null=False)
     usuario     = models.CharField(max_length=50)
     contrasena  = models.CharField(max_length=18)
-    carrera     = models.BigAutoField(blank=True, null=False)
+    carrera     = models.ForeignKey(Carrera, on_delete=models.SET_NULL, null=True)
+
 
