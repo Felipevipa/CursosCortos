@@ -17,7 +17,7 @@ class Estudiante(models.Model):
     foto        = models.ImageField(null=True)
     nombres     = models.CharField(max_length=40)
     apellidos   = models.CharField(max_length=40)
-    documento   = models.IntegerField()
+    documento   = models.BigIntegerField()
     fechadenacimiento = models.DateField()
     email       = models.EmailField()
     usuario     = models.CharField(max_length=50)
@@ -37,15 +37,15 @@ class Materia(models.Model):
 
 
 class Docente(models.Model):
-    foto = models.ImageField(null=True)
-    nombres = models.CharField(max_length=40)
-    apellidos = models.CharField(max_length=40)
-    documento = models.IntegerField()
+    foto              = models.ImageField(null=True)
+    nombres           = models.CharField(max_length=40)
+    apellidos         = models.CharField(max_length=40)
+    documento         = models.BigIntegerField()
     fechadenacimiento = models.DateField()
-    email = models.EmailField()
-    usuario = models.CharField(max_length=50)
-    contrasena = models.CharField(max_length=18)
-    carrera = models.ForeignKey(Carrera, on_delete=models.SET_NULL, null=True)
+    email             = models.EmailField()
+    usuario           = models.CharField(max_length=50)
+    contrasena        = models.CharField(max_length=18)
+    carrera           = models.ForeignKey(Carrera, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return '%s %s' % (self.nombres, self.apellidos)
