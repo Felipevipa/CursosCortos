@@ -14,6 +14,7 @@ class Carrera(models.Model):
 
 
 class Estudiante(models.Model):
+    foto        = models.ImageField(null=True)
     nombres     = models.CharField(max_length=40)
     apellidos   = models.CharField(max_length=40)
     documento   = models.IntegerField()
@@ -32,10 +33,11 @@ class Materia(models.Model):
     carrera = models.ForeignKey(Carrera, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
-        return '%s %s' % (self.nombre, self.carrera)
+        return '%s - %s' % (self.nombre, self.carrera)
 
 
 class Docente(models.Model):
+    foto = models.ImageField(null=True)
     nombres = models.CharField(max_length=40)
     apellidos = models.CharField(max_length=40)
     documento = models.IntegerField()
@@ -54,6 +56,9 @@ class Tematica(models.Model):
     titulo      = models.CharField(max_length=40)
     materia     = models.ForeignKey(Materia, on_delete=models.SET_NULL, null=True)
     docente     = models.ForeignKey(Docente, on_delete=models.SET_NULL, null=True)
+
+    def __str__(self):
+        return '%s - %s' % (self.titulo, self.materia)
 
 
 class Material(models.Model):
