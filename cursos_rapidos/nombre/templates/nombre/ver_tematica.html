@@ -1,0 +1,26 @@
+{% extends 'nombre/base.html' %}
+
+{% block content %}
+<a href="../" class="btn btn-secondary d-inline">Volver</a>
+<br><br>
+<center>
+
+{% for material in material_list %}
+{% if material.contenido_de_texto %}
+{{ material.contenido_de_texto }} <br>
+{% endif %}
+{% if material.imagen %}
+<img src="{{ material.imagen.url }}" class="user-image img-responsive"/> <br>
+{% endif %}
+{% if material.video %}
+<iframe width="560" height="315" src="{{ material.video }}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe><br>
+{% endif %}
+{% if material.materialExterno %}
+<iframe src="{{ material.materialExterno }}" style="display: hidden; width: 80%; height: 500px" title="description" allowfullscreen></iframe><br>
+{% endif %}
+
+{% endfor %}
+</center>
+{% endblock %}
+
+

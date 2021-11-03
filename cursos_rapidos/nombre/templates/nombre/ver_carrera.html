@@ -1,0 +1,36 @@
+{% extends 'nombre/base.html' %}
+
+{% block content %}
+
+<br>
+
+
+<table class="table">
+  <tr>
+    <td><h1>Materias - {{ carrera.nombre }}</h1></td>
+    <td align="center" class="col-2">
+      <a href="{% url 'agregar-materia' carrera.nombre %}" class="btn btn-secondary">Agregar Materia</a>
+    </td>
+  </tr>
+  {% for materia in materias_list %}
+  <tr>
+    <td>
+      <a href="{{ materia.get_absolute_url }}" class="list-group-item list-group-item-action">{{ materia.nombre}}</a>
+    </td>
+    <td>
+      <a href="{% url 'actualizar-materia' carrera.nombre materia.id %}" class="btn btn-outline-secondary btn-sm">Actualizar</a>
+    
+      <a href="{% url 'eliminar-materia' carrera.nombre materia.id %}" class="btn btn-outline-danger btn-sm">Eliminar</a>
+
+    </td>
+  </tr>
+  {% endfor %} 
+
+</table>
+<a href="../" class="btn btn-secondary d-inline">Volver</a>
+<br>
+
+
+{% endblock %}
+
+

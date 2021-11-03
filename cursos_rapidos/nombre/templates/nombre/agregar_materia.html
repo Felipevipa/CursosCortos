@@ -1,0 +1,24 @@
+{% extends 'nombre/base.html' %}
+
+{% block content %}
+
+  <center>
+    <h1> Agregar Materia </h1>
+    <br><br>
+    {% if submitted %}
+      Tu Materia fue agregada correctamente
+      <a href="{% url 'carreras-detail' %}" class="btn btn-secondary">Volver</a>
+    {% else %}
+      <form action="" method="POST">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <input type="submit" name="" value="Submit" class="btn btn-secondary">
+    </form>
+    
+    {% endif %}
+  </center>
+
+
+{% endblock %}
+
+
