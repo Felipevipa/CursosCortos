@@ -6,6 +6,8 @@ from datetime import datetime
 import os
 
 
+
+
 def agregar_tematica(request, carrera, materia):
 	submitted = False
 	if request.method == 'POST':
@@ -39,6 +41,22 @@ def actualizar_materia(request, carrera, materia_id):
 		'page_title': "Actualizar Materia",
 	}
 	return render(request, 'nombre/actualizar_materia.html', context)
+
+def actualizar_tematica(request, carrera, materia, tematica_id):
+	tematica = Tematica.objects.get(pk=tematica_id)
+	form = TematicaForm(request.POST or None, instance=tematica)
+	if form.is_valid():
+		form.save()
+		return redirect('ver-materia', carrera, materia)
+
+	context = {
+		'carrera': carrera,
+		'materia': materia,
+		'form': form,
+		'page_title': "Actualizar Tematica",
+	}
+
+	return render(request, 'nombre/actualizar_tematica.html', context)
 
 
 def eliminar_tematica(request, carrera, materia, tematica_id):

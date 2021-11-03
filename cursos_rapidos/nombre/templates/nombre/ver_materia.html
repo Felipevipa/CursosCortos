@@ -4,27 +4,31 @@
 
 <br>
 
-<div class="card">
-  <div class="card-header">
-    <h3 class="d-inline">{{ materia.nombre }}</h3>
-    <a href="../" class="btn btn-secondary d-inline">Volver</a>
-    <a href="{% url 'agregar-tematica' materia.carrera materia.nombre %}" class="btn btn-secondary d-inline">Agregar Tematica</a>
-  </div>
-  <div class="card-body">
-    <h5 class="card-title">Tematicas:</h5>
-    <p class="card-text">
-      
-        {% for tematica in tematicas_list %}
-        <a href="{{ tematica.get_absolute_url }}" class="list-group-item list-group-item-action">
+<table class="table">
+  <tr>
+    <td><h1>Tematicas - {{ materia.nombre }}</h1></td>
+    <td align="center" class="col-2">
+      <a href="{% url 'agregar-tematica' materia.carrera materia.nombre %}" class="btn btn-secondary d-inline">Agregar Tematica</a>
+    </td>
+  </tr>
+  {% for tematica in tematicas_list %}
+  <tr>
+    <td>
+      <a href="{{ tematica.get_absolute_url }}" class="list-group-item list-group-item-action">
          {{ tematica.titulo}}
          </a>
+    </td>
+    <td>
+      <a href="{% url 'actualizar-tematica' tematica.materia.carrera.nombre tematica.materia.nombre tematica.id %}" class="btn btn-outline-secondary btn-sm">Actualizar</a>
          <a href="{% url 'eliminar-tematica' tematica.materia.carrera.nombre tematica.materia.nombre tematica.id %}" class="btn btn-outline-danger btn-sm">Eliminar</a>
-        {% endfor %} 
+    </td>
+  </tr>
+  {% endfor %} 
+</table>
 
-  </p>
-    
-  </div>
-</div>
+<a href="../" class="btn btn-secondary d-inline">Volver</a>
+
+
 <br><br>
 <div class="container text-center">
 <div class="container-fluid d-flex justify-content-left flex-wrap">
