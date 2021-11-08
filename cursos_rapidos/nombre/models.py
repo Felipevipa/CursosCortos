@@ -96,10 +96,14 @@ class Docente(AbstractBaseUser):
 
 
 class Tematica(models.Model):
-    id          = models.BigAutoField(primary_key=True, serialize=False)
-    titulo      = models.CharField(max_length=40)
-    materia     = models.ForeignKey(Materia, on_delete=models.SET_NULL, null=True, blank=True)
-    docente     = models.ForeignKey(Docente, on_delete=models.SET_NULL, null=True, blank=True)
+    id           = models.BigAutoField(primary_key=True, serialize=False)
+    imagen       = models.ImageField(null=True, upload_to='static/images/tematicas/',)
+    titulo       = models.CharField(max_length=40)
+    resumen      = models.CharField(max_length=300,)
+    materia      = models.ForeignKey(Materia, on_delete=models.SET_NULL, null=True, blank=True)
+    docente      = models.ForeignKey(Docente, on_delete=models.SET_NULL, null=True, blank=True)
+    is_available = models.BooleanField(default=False)
+    last_updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return '%s - %s' % (self.titulo, self.materia)

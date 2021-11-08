@@ -30,34 +30,29 @@
 
 
 <br><br>
-<div class="container text-center">
-<div class="container-fluid d-flex justify-content-left flex-wrap">
-  
-{% for tematica in tematicas_list %}  
-<div class="card d-inline-flex" style="width: 30%;height: 27rem; margin: 12px">
-  <div class="card-header">
-    <h3 class="d-inline">{{ tematica.titulo }}</h3>
-  </div>
-  <div class="card-body">
-    <!--<h5 class="card-title">{{ 
-    tematica.materia.nombre }}</h5>-->
-    <p class="card-text" style="height: 18em; overflow: hidden;">
-      {% for material in material_list %}
-        
-        {% if material.0 == tematica.titulo %}
-
-        {{ material.1.contenido_de_texto }}
-
-        {% endif %}
-         
-      {% endfor %} 
-      
-    </p>
-    <a href="{{ tematica.get_absolute_url }}" class="btn btn-primary"> Entrar</a>
+<div class="row row-cols-1 row-cols-md-2 g-4">
+{% for tematica in tematicas_list %}
+<div class="col">
+<div class="card mb-3" style="max-width: 540px;">
+  <div class="row g-0">
+    <div class="col-md-4 d-flex align-items-center">
+      <img src="{{ tematica.imagen.url }}" class="img-fluid rounded-start" alt="...">
+    </div>
+    <div class="col-md-8">
+      <div class="card-body">
+        <h5 class="card-title">{{ tematica.titulo }}</h5>
+        <h6 class="card-title">{{ tematica.materia.nombre }} - {{ tematica.materia.carrera.nombre }}</h6>
+        <p class="card-text" style="overflow: hidden; height: 150px;">
+          {{ tematica.resumen }}
+        </p>
+        <p class="card-text"><a href="{{ tematica.get_absolute_url }}" class="btn btn-outline-primary"> Entrar</a></p>
+        <p class="card-text"><small class="text-muted">Ultima Actualización: {{ tematica.last_updated }}</small></p>
+      </div>
+    </div>
   </div>
 </div>
-{% endfor %} 
 </div>
+{% endfor %}
 </div>
 <br>
 

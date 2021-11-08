@@ -11,7 +11,8 @@ import os
 def agregar_tematica(request, carrera, materia):
 	submitted = False
 	if request.method == 'POST':
-		form = TematicaForm(request.POST)
+		form = TematicaForm(request.POST, request.FILES)
+		print('EL FORMULARIO ES VALIDO' + str(form.is_valid()))
 		if form.is_valid():
 			form.save()
 			return HttpResponseRedirect('?submitted=True')
@@ -41,6 +42,7 @@ def actualizar_materia(request, carrera, materia_id):
 		'page_title': "Actualizar Materia",
 	}
 	return render(request, 'nombre/actualizar_materia.html', context)
+
 
 def actualizar_tematica(request, carrera, materia, tematica_id):
 	tematica = Tematica.objects.get(pk=tematica_id)
@@ -224,6 +226,7 @@ def registro(request):
 	student_form = RawStudentForm()
 	if request.method == "POST":
 		student_form = RawStudentForm(request.POST, request.FILES)
+		print('EL FORMULARIO ES VALIDO' + str(student_form.is_valid()))
 		if student_form.is_valid():
 			student_form.save()
 			return redirect("registro")
@@ -244,3 +247,20 @@ def registro(request):
 	
 	return render(request, 'nombre/registro.html', context)
 
+def home(request):
+	cursos = Tematica.objects.filter(is_available=True).order_by('-last_updated')
+	material_list = []
+	for curso in cursos:
+		material = Material.objects.filter(tematica=curso)
+		for mater in material:	
+			print(mater)
+			material_list.append((curso.titulo, mater))
+
+	context = {
+		'cursos': cursos,
+		'material_list': material_list,
+		'page_title': "UGC",
+		}
+	return render(request, 'nombre/home.html', context)
+
+	

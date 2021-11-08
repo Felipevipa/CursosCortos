@@ -4,18 +4,27 @@ from .models import Estudiante, Carrera, Materia, Tematica
 
 
 class TematicaForm(forms.ModelForm):
+
+	
+
 	class Meta:
 		model = Tematica
 		fields = '__all__'
 		labels = {
+			'imagen': 'Portada',
 			'titulo': '',
+			'resumen': '',
 			'materia': 'Materia:',
 			'docente':'Docente:',
+			'is_available': 'Disponible',
 		}
 		widgets = {
+			'imagen': forms.FileInput(attrs = {'class': 'form-control',}),
 			'titulo': forms.TextInput(attrs={'class':'form-control', 'placeholder':'Titulo de la Tematica'}),
+			'resumen': forms.Textarea(attrs={'class':'form-control', 'placeholder':'Resumen de la Tematica','rows':3,}),
 			'materia': forms.Select(attrs={'class':'form-select', 'readonly': True,}),
 			'docente': forms.Select(attrs={'class':'form-select',}),
+			# 'is_available': forms.NullBooleanField(attrs={'class':'form-select',}),
 		}
 
 

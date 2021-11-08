@@ -26,6 +26,6 @@ class EstudianteAdmin(admin.ModelAdmin):
 @admin.register(Tematica)
 class TematicaAdmin(admin.ModelAdmin):
 	# fields = (('name','venue'), 'event_date', 'description', 'manager')
-	list_display = ('titulo', 'materia', 'docente')
-	list_filter = ('titulo', 'materia', 'docente')
+	list_display = ('titulo', 'materia', 'docente', 'last_updated',)
+	list_filter = ('titulo', 'materia', 'docente', 'last_updated')
 	ordering = ('-materia',)
