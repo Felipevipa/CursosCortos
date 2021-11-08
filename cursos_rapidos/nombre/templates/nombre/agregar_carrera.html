@@ -1,7 +1,7 @@
 {% extends 'nombre/base.html' %}
 
 {% block content %}
-
+{% if user.is_authenticated %}
   <center>
     <h1> Agregar Carrera </h1>
     <br><br>
@@ -16,7 +16,13 @@
     </form>
     {% endif %}
   </center>
+{% else %}
 
+<h1>Lo sentimos, debes ingresar para ver esta pagina</h1>
+
+<a class="nav-link" href="{% url 'login' %}">Ingresar</a>
+
+{% endif %}
 
 {% endblock %}
 
