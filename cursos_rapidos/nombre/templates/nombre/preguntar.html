@@ -1,0 +1,26 @@
+{% extends 'nombre/base.html' %}
+
+{% block content %}
+	<div class="shadow p-4 mb-5 bg-body rounded">
+		<h1>Preguntar</h1>
+
+		<form action="" method="POST">
+			{% csrf_token %}
+			  <div class="mb-3">
+			    <label for="exampleInputEmail1" class="form-label">Pregunta: </label>
+			    <input type="text" class="form-control" name="pregunta" aria-describedby="emailHelp">
+			  </div>
+
+			<input type="submit" name="" value="Submit" class="btn btn-secondary">
+		</form>
+		{% if pregunta %}
+			<p>Pregunta: {{ pregunta }}</p>
+		{% endif %}
+
+		{% if respuesta %}
+			<p>Respuesta: {{ respuesta }}</p>
+		{% endif %}
+		<br><br>
+		
+	</div>
+{% endblock %}

@@ -3,8 +3,28 @@ from .models import Estudiante, Carrera, Materia, Tematica, Material
 from .forms import RawStudentForm, CarreraForm, MateriaForm, TematicaForm
 from django.http import HttpResponseRedirect
 from datetime import datetime
+from . import version_aplicable
 import os
 
+
+def preguntar(request):
+	if request.method == 'POST':
+		pregunta = request.POST['pregunta']
+		print(pregunta)
+		respuesta = version_aplicable.pregunta_respuesta_escrito(pregunta)
+		context = {
+			'pregunta': pregunta,
+			'respuesta': respuesta,
+		}
+		return render(request, "nombre/preguntar.html", context)
+
+	else:
+		context = {
+
+		}
+		return render(request, "nombre/preguntar.html", context)
+
+	
 
 
 

@@ -21,4 +21,5 @@ urlpatterns = [
     path('agregar_carrera/',                                            views.agregar_carrera,      name="agregar-carrera"),
     path('actualizar_carrera/<carrera_id>/',                            views.actualizar_carrera,   name="actualizar-carrera"),
     path('eliminar_carrera/<carrera_id>/',                              views.eliminar_carrera,     name="eliminar-carrera"),
+    path('preguntar/',                                                  views.preguntar,            name="preguntar"),
 ]
