@@ -14,7 +14,8 @@ from transformers import AutoTokenizer, AutoModelForQuestionAnswering, pipeline
 import os
 import time
 ############################################################################
-
+import pyttsx3
+from pyttsx3 import engine
 
 pv = 0
 model = ""
@@ -22,12 +23,20 @@ tokenizer = ""
 contexto = ""
 nlp = ""
 
+def sonido(son):
+    engine = pyttsx3.init()
+    voice_id = 'spanish-latin-am'
+    engine.setProperty('voice',voice_id)
+    rate = engine.getProperty('rate')
+    engine.say(str(son))
+    engine.runAndWait()
+    engine.stop()
 
-def pregunta_respuesta_escrito(pregunta):
-    global pv, model, tokenizer, contexto, nlp
-    if pv == 0:
+def cargar():
+      global pv, model, tokenizer, contexto, nlp
+      if pv == 0:
         inicio = time.time()
-
+        pregunta=""
         the_model = 'mrm8488/distill-bert-base-spanish-wwm-cased-finetuned-spa-squad2-es'
         tokenizer = AutoTokenizer.from_pretrained(the_model, do_lower_case=False)
         model = AutoModelForQuestionAnswering.from_pretrained(the_model)
@@ -37,9 +46,7 @@ def pregunta_respuesta_escrito(pregunta):
 
 
         inicio = time.time()
-        with open(os.getcwd() + "\\nombre\\nuevo.txt", "r") as archivo:
-            contexto = str(archivo.read().splitlines())
-            archivo.close()
+        
         # contexto='Conjunto de elementos físicos o materiales que constituyen una computadora o un sistema informático.'
         final = time.time()
         print("Tiempo para leer el archivo: " + str(final - inicio) + " segundos")
@@ -52,17 +59,22 @@ def pregunta_respuesta_escrito(pregunta):
             # print('')
         pv = 1
 
-        # Ejemplo de inferencia (pregunta-respuesta)
-        nlp = pipeline('question-answering', model=model, tokenizer=tokenizer)
+        
 
+def pregunta_respuesta_escrito(pregunta):
+    with open(os.getcwd() + "\\nombre\\nuevo.txt", "r") as archivo:
+            contexto = str(archivo.read().splitlines())
+            archivo.close()
+    # Ejemplo de inferencia (pregunta-respuesta)
+    nlp = pipeline('question-answering', model=model, tokenizer=tokenizer)
 
     inicio = time.time()
 
     salida = nlp({'question':pregunta, 'context':contexto})
     final = time.time()
     print("Tiempo para responder la pregunta: " + str(final - inicio) + " segundos\n")
-
-    return salida['answer']
+    #sonido(salida['answer'])
+    #return salida['answer']
 
     continuar = pregunta!=''
 
@@ -71,11 +83,6 @@ def pregunta_respuesta_escrito(pregunta):
         print('\nRespuesta:')
         print('-----------------')
         print(salida['answer'])
-        return salida['answer']
-    #messagebox.showinfo('Respuesta', ''+salida['answer'])
-    #mesajeTxt2['text']=(salida['answer'])
+        sonido(salida['answer'])
+    return salida['answer']
 
-
-# while True:
-  #  pregunta='que es un material'
-   # respuesta=pregunta_respuesta_escrito(pregunta)

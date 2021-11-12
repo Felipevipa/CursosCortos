@@ -5,10 +5,15 @@ from django.http import HttpResponseRedirect
 from datetime import datetime
 from . import version_aplicable
 import os
+from django.urls import resolve
+ 
+version_aplicable.cargar()
 
 
 def preguntar(request):
 	if request.method == 'POST':
+		volver = request.META.get('HTTP_REFERER')
+		print(volver)
 		pregunta = request.POST['pregunta']
 		print(pregunta)
 		respuesta = version_aplicable.pregunta_respuesta_escrito(pregunta)
@@ -16,7 +21,9 @@ def preguntar(request):
 			'pregunta': pregunta,
 			'respuesta': respuesta,
 		}
-		return render(request, "nombre/preguntar.html", context)
+		request.session['respuesta'] = respuesta
+		request.session['open'] = True
+		return redirect(volver)
 
 	else:
 		context = {
