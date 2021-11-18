@@ -1,7 +1,10 @@
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, AbstractUser
+from django.contrib.auth.models import User
 import datetime
 from django.urls import reverse
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 # Create your models here.
 #'id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID'))
@@ -18,20 +21,20 @@ class Carrera(models.Model):
         return reverse("ver-carrera", kwargs={'nombre': self.nombre})  # f"/products/{self.id}/"
 
 
-class Estudiante(models.Model):
+class EstudianteProfile(models.Model):
     foto        = models.ImageField(null=True, upload_to='static/images/estudiantes/')
     codigo      = models.BigIntegerField()
-    nombres     = models.CharField(max_length=40)
-    apellidos   = models.CharField(max_length=40)
     documento   = models.BigIntegerField()
     fechadenacimiento = models.DateField()
-    email       = models.EmailField()
-    usuario     = models.CharField(max_length=50)
-    contrasena  = models.CharField(max_length=18)
+    user        = models.OneToOneField(User, on_delete=models.CASCADE, blank=True, null=True)
     carrera     = models.ForeignKey(Carrera, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
-        return '%s %s' % (self.nombres, self.apellidos)
+        return '%s %s' % (self.codigo, self.user.first_name)
+
+
+
+
 
 
 class Materia(models.Model):
@@ -129,7 +132,7 @@ class Calificacion(models.Model):
     tiempo      = models.TimeField()
     nota        = models.DecimalField(max_digits=2, decimal_places=2)
     quiz        = models.ForeignKey(Quiz, on_delete=models.SET_NULL, null=True)
-    estudiante  = models.ForeignKey(Estudiante, on_delete=models.SET_NULL, null=True)
+    estudiante  = models.ForeignKey(EstudianteProfile, on_delete=models.SET_NULL, null=True)
 
 
 class Pregunta(models.Model):

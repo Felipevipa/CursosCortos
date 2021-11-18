@@ -1,6 +1,6 @@
 from django import forms
 import datetime
-from .models import Estudiante, Carrera, Materia, Tematica
+from .models import EstudianteProfile, Carrera, Materia, Tematica
 
 
 class TematicaForm(forms.ModelForm):
@@ -54,6 +54,13 @@ class CarreraForm(forms.ModelForm):
 			'nombre': forms.TextInput(attrs={'class':'form-control', 'placeholder':'Nombre de la carrera'}),
 		}
 		
+
+
+class RegistroEstudiante(forms.ModelForm):
+	class Meta:
+		model = EstudianteProfile
+		exclude = ['user']
+
 
 
 class RawStudentForm(forms.ModelForm):
@@ -150,5 +157,5 @@ class RawStudentForm(forms.ModelForm):
 	
 
 	class Meta:
-		model = Estudiante
+		model = EstudianteProfile
 		fields = '__all__'

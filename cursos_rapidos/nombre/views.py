@@ -1,12 +1,15 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Estudiante, Carrera, Materia, Tematica, Material
-from .forms import RawStudentForm, CarreraForm, MateriaForm, TematicaForm
+from .models import EstudianteProfile, Carrera, Materia, Tematica, Material
+from .forms import RawStudentForm, CarreraForm, MateriaForm, TematicaForm, RegistroEstudiante
 from django.http import HttpResponseRedirect
 from datetime import datetime
 from . import version_aplicable
 import os
+from django.views.decorators.clickjacking import xframe_options_exempt
 
 
+
+@xframe_options_exempt
 def preguntar(request):
 	if request.method == 'POST':
 		pregunta = request.POST['pregunta']
@@ -25,6 +28,7 @@ def preguntar(request):
 		return render(request, "nombre/preguntar.html", context)
 
 	
+
 
 
 

@@ -13,9 +13,6 @@
         <li class="nav-item">
           <a class="nav-link" href="{% url 'carreras-detail' %}">Carreras</a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'preguntar' %}">Preguntar</a>
-        </li>
         {% if user.is_authenticated %}
         <li class="nav-item">
           <a class="nav-link" href="{% url 'logout' %}">Logout</a>

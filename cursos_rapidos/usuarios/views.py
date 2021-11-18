@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.forms import UserCreationForm
-from .forms import RegistrarUsuarioForm
+from .forms import RegistrarUsuarioForm, RegistroEstudiante
 
 # Create your views here.
 def login_user(request):
@@ -50,3 +50,32 @@ def register_user(request):
 		'form': form,
 	}
 	return render(request, 'autenticacion/registrar_usuario.html', context)
+
+
+def registrar_estudiante(request):
+	if request.method == 'POST':
+		form_user = RegistrarUsuarioForm(request.POST)
+		form_profile = RegistroEstudiante(request.POST, request.FILES)
+		if form_profile.is_valid() and form_user.is_valid():
+
+			user = form_user.save()
+
+			profile = form_profile.save(commit=False)
+			profile.user = user
+			profile.save()
+
+			username = form_user.cleaned_data['username']
+			password = form_user.cleaned_data['password1']
+			user = authenticate(username=username,password=password)
+			login(request, user)
+			messages.success(request, ('Registro completo'))
+			return redirect('home')
+	else:
+		form_profile = RegistroEstudiante()
+		form_user = RegistrarUsuarioForm()
+
+	context = {
+		'form_profile': form_profile,
+		'form_user': form_user,
+	}
+	return render(request, 'autenticacion/registrar_estudiante.html', context)

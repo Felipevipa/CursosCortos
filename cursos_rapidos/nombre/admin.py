@@ -1,8 +1,8 @@
 from django.contrib import admin
-from .models import Estudiante, Carrera, Calificacion, Tematica, Quiz, Material, Pregunta, OpcionRespuesta, Respuesta, Materia, Docente
+from .models import EstudianteProfile, Carrera, Calificacion, Tematica, Quiz, Material, Pregunta, OpcionRespuesta, Respuesta, Materia, Docente
 # Register your models here.
 
-# admin.site.register(Estudiante)
+admin.site.register(EstudianteProfile)
 admin.site.register(Carrera)
 admin.site.register(Calificacion)
 # admin.site.register(Tematica)
@@ -15,12 +15,12 @@ admin.site.register(Materia)
 admin.site.register(Docente)
 
 
-@admin.register(Estudiante)
-class EstudianteAdmin(admin.ModelAdmin):
-	# fields = (('name','venue'), 'event_date', 'description', 'manager')
-	list_display = ('codigo', 'nombres', 'apellidos', 'documento', 'carrera')
-	list_filter = ('carrera',)
-	ordering = ('-nombres',)
+# @admin.register(EstudianteProfile)
+# class EstudianteAdmin(admin.ModelAdmin):
+# 	# fields = (('name','venue'), 'event_date', 'description', 'manager')
+# 	list_display = ('codigo', 'nombres', 'apellidos', 'documento', 'carrera')
+# 	list_filter = ('carrera',)
+# 	ordering = ('-nombres',)
 		
 
 @admin.register(Tematica)
