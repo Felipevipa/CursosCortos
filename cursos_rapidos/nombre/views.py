@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import EstudianteProfile, Carrera, Materia, Tematica, Material
-from .forms import RawStudentForm, CarreraForm, MateriaForm, TematicaForm, RegistroEstudiante
+from .forms import RawStudentForm, CarreraForm, MateriaForm, TematicaForm
 from django.http import HttpResponseRedirect
 from datetime import datetime
 from . import version_aplicable
@@ -237,13 +237,12 @@ def carreras_view(request):
 	return render(request, "nombre/carreras_list.html", context)
 
 
-def usuario(request, id):
-    obj = Estudiante.objects.get(codigo=id) #list of objects
-    
-    context = {
-        "object": obj,
-    }
-    return render(request, "nombre/index.html", context)
+def usuario(request):
+	print(request.user.groups.filter(name="Estudiantes").exists())
+	obj = EstudianteProfile.objects.get(user=request.user) 
+	context = {"object": obj,}
+	return render(request, "nombre/ver_perfil.html", context)
+
 
 
 def registro(request):

@@ -56,11 +56,6 @@ class CarreraForm(forms.ModelForm):
 		
 
 
-class RegistroEstudiante(forms.ModelForm):
-	class Meta:
-		model = EstudianteProfile
-		exclude = ['user']
-
 
 
 class RawStudentForm(forms.ModelForm):

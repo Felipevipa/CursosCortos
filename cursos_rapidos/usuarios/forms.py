@@ -11,6 +11,21 @@ class RegistroEstudiante(forms.ModelForm):
 		model = EstudianteProfile
 		exclude = ['user']
 
+		labels = {
+			'foto': 'Foto de Perfil',
+			'codigo': '',
+			'documento': '',
+			'fechadenacimiento': 'Fecha De Nacimiento:',
+			'carrera':'Carrera:',
+		}
+		widgets = {
+			'foto': forms.FileInput(attrs = {'class': 'form-control',}),
+			'codigo': forms.TextInput(attrs={'class':'form-control', 'placeholder':'Codigo'}),
+			'documento': forms.TextInput(attrs={'class':'form-control', 'placeholder':'Documento'}),
+			'fechadenacimiento': forms.DateInput(attrs = {'class': 'form-control', 'placeholder': 'Fecha de Nacimiento', 'type': 'date',}),
+			'carrera': forms.Select(attrs={'class':'form-select',}),
+		}
+
 
 class RegistrarUsuarioForm(UserCreationForm):
 	email = forms.EmailField(widget=forms.EmailInput(attrs={

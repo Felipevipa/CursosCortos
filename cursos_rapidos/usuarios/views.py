@@ -1,7 +1,9 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
+from django.contrib.auth.models import User, Group
 from django.contrib.auth.forms import UserCreationForm
+from nombre.models import EstudianteProfile
 from .forms import RegistrarUsuarioForm, RegistroEstudiante
 
 # Create your views here.
@@ -12,6 +14,8 @@ def login_user(request):
 		user = authenticate(request, username=username, password=password)
 		if user is not None:
 			login(request, user)
+			request.session['foto'] = EstudianteProfile.objects.get(user=user).foto.url
+			print(EstudianteProfile.objects.get(user=user).foto.url)
 			return redirect('home')
 
 
@@ -63,6 +67,8 @@ def registrar_estudiante(request):
 			profile = form_profile.save(commit=False)
 			profile.user = user
 			profile.save()
+			group = Group.objects.get(name="Estudiantes")
+			user.groups.add(group)
 
 			username = form_user.cleaned_data['username']
 			password = form_user.cleaned_data['password1']
