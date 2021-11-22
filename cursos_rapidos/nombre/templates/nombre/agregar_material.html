@@ -2,12 +2,13 @@
 
 {% block content %}
 {% if user.is_authenticated %}
+<div class="shadow p-4 mb-5 bg-body rounded">
   <center>
-    <h1> Agregar Tematica </h1>
+    <h1> Agregar Material </h1>
     <br><br>
     {% if submitted %}
-      Tu Tematica fue agregada correctamente
-      <a href="{% url 'agregar-material' %}" class="btn btn-secondary">Volver</a>
+      Tu Material fue agregada correctamente
+      <a href="{% url 'carreras-detail' %}" class="btn btn-secondary">Volver</a>
     {% else %}
       <form action="" method="POST" enctype="multipart/form-data">
       {% csrf_token %}
@@ -17,6 +18,7 @@
     
     {% endif %}
   </center>
+</div>
 {% else %}
 
 <h1>Lo sentimos, debes ingresar para ver esta pagina</h1>
@@ -25,4 +27,3 @@
 
 {% endif %}
 {% endblock %}
-

@@ -1,12 +1,28 @@
 from django import forms
 import datetime
-from .models import EstudianteProfile, Carrera, Materia, Tematica
+from .models import EstudianteProfile, Carrera, Materia, Tematica, Material
+
+
+
+class MaterialForm(forms.ModelForm):
+	class Meta:
+		model = Material
+		exclude = ['tematica']
+		labels = {
+			'contenido_de_texto': '',
+			'imagen': 'Imagen',
+			'video': '',
+			'materialExterno': '',
+		}
+		widgets = {
+			'contenido_de_texto': forms.Textarea(attrs={'class':'form-control', 'placeholder':'Contenido de Texto'}),
+			'imagen': forms.FileInput(attrs = {'class': 'form-control',}),
+			'video': forms.TextInput(attrs={'class':'form-control', 'placeholder':'Link del video',}),
+			'materialExterno': forms.TextInput(attrs={'class':'form-control', 'placeholder':'Link del material externo',}),
+		}
 
 
 class TematicaForm(forms.ModelForm):
-
-	
-
 	class Meta:
 		model = Tematica
 		fields = '__all__'

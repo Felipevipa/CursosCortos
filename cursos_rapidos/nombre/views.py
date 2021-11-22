@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import EstudianteProfile, Carrera, Materia, Tematica, Material
-from .forms import RawStudentForm, CarreraForm, MateriaForm, TematicaForm
+from .forms import RawStudentForm, CarreraForm, MateriaForm, TematicaForm, MaterialForm
 from django.http import HttpResponseRedirect
 from datetime import datetime
 from . import version_aplicable
@@ -29,6 +29,27 @@ def preguntar(request):
 
 	
 
+def agregar_material(request, carrera, materia, tematica):
+	submitted = False
+	if request.method == 'POST':
+		form = MaterialForm(request.POST, request.FILES)
+		print('EL FORMULARIO ES VALIDO' + str(form.is_valid()))
+		if form.is_valid():
+			tematica = Tematica.objects.get(titulo=tematica)
+			material = form.save(commit=False)
+			material.tematica = tematica
+			material.save()
+			return HttpResponseRedirect('?submitted=True')
+	else:
+		form = MaterialForm()
+		if 'submitted' in request.GET:
+			submitted = True
+
+	context = {
+		'form': form,
+		'submitted': submitted,
+	}
+	return render(request, 'nombre/agregar_material.html', context)
 
 
 

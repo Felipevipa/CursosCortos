@@ -3,6 +3,7 @@
 {% block content %}
 <a href="../" class="btn btn-secondary d-inline">Volver</a>
 <br><br>
+<div class="shadow p-4 mb-5 bg-body rounded">
 <center>
 
 {% for material in material_list %}
@@ -21,6 +22,9 @@
 
 {% endfor %}
 </center>
+</div>
+<a href="{% url 'agregar-material' tematica.materia.carrera tematica.materia tematica.titulo %}" class="btn btn-secondary d-inline">Agregar Material</a>
+<br>
 {% endblock %}
 
 
