@@ -33,7 +33,11 @@ class EstudianteProfile(models.Model):
         return '%s %s' % (self.codigo, self.user.first_name)
 
 
-
+class DocenteProfile(models.Model):
+    foto              = models.ImageField(null=True, upload_to='static/images/docentes/')
+    documento         = models.BigIntegerField()
+    fechadenacimiento = models.DateField()
+    user              = models.OneToOneField(User, on_delete=models.CASCADE, blank=True, null=True)
 
 
 
@@ -101,7 +105,7 @@ class Docente(AbstractBaseUser):
 class Tematica(models.Model):
     id           = models.BigAutoField(primary_key=True, serialize=False)
     imagen       = models.ImageField(null=True, upload_to='static/images/tematicas/',)
-    titulo       = models.CharField(max_length=40)
+    titulo       = models.CharField(max_length=80)
     resumen      = models.CharField(max_length=300,)
     materia      = models.ForeignKey(Materia, on_delete=models.SET_NULL, null=True, blank=True)
     docente      = models.ForeignKey(Docente, on_delete=models.SET_NULL, null=True, blank=True)

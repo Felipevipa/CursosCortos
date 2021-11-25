@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.contrib.auth.models import User, Group
 from django.contrib.auth.forms import UserCreationForm
 from nombre.models import EstudianteProfile
-from .forms import RegistrarUsuarioForm, RegistroEstudiante
+from .forms import RegistrarUsuarioForm, RegistroEstudiante, RegistroDocente
 
 # Create your views here.
 def login_user(request):
@@ -85,3 +85,36 @@ def registrar_estudiante(request):
 		'form_user': form_user,
 	}
 	return render(request, 'autenticacion/registrar_estudiante.html', context)
+
+
+
+def registrar_docente(request):
+	if request.method == 'POST':
+		form_user = RegistrarUsuarioForm(request.POST)
+		form_profile = RegistroDocente(request.POST, request.FILES)
+		if form_profile.is_valid() and form_user.is_valid():
+
+			user = form_user.save()
+
+			profile = form_profile.save(commit=False)
+			profile.user = user
+			profile.save()
+			group = Group.objects.get(name="Docentes")
+			user.groups.add(group)
+
+			username = form_user.cleaned_data['username']
+			password = form_user.cleaned_data['password1']
+			user = authenticate(username=username,password=password)
+			login(request, user)
+			messages.success(request, ('Registro completo'))
+			return redirect('home')
+	else:
+		form_profile = RegistroDocente()
+		form_user = RegistrarUsuarioForm()
+
+	context = {
+		'form_profile': form_profile,
+		'form_user': form_user,
+	}
+	return render(request, 'autenticacion/registrar_docente.html', context)
+	

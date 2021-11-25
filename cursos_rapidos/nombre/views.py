@@ -3,7 +3,7 @@ from .models import EstudianteProfile, Carrera, Materia, Tematica, Material
 from .forms import RawStudentForm, CarreraForm, MateriaForm, TematicaForm, MaterialForm
 from django.http import HttpResponseRedirect
 from datetime import datetime
-from . import version_aplicable
+# from . import version_aplicable
 import os
 from django.views.decorators.clickjacking import xframe_options_exempt
 
@@ -14,7 +14,11 @@ def preguntar(request):
 	if request.method == 'POST':
 		pregunta = request.POST['pregunta']
 		print(pregunta)
-		respuesta = version_aplicable.pregunta_respuesta_escrito(pregunta)
+		respuesta = "Respuesta"
+
+		if request.user.groups.filter(name="Estudiantes").exists():
+  			respuesta = "Acceso concedido"
+		# respuesta = version_aplicable.pregunta_respuesta_escrito(pregunta)
 		context = {
 			'pregunta': pregunta,
 			'respuesta': respuesta,

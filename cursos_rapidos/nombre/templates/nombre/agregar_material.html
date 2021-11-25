@@ -7,8 +7,11 @@
     <h1> Agregar Material </h1>
     <br><br>
     {% if submitted %}
-      Tu Material fue agregada correctamente
-      <a href="{% url 'carreras-detail' %}" class="btn btn-secondary">Volver</a>
+      Tu Material fue agregado correctamente
+      <a href="../" class="btn btn-secondary">Volver</a>
+      <form>
+          <input type="button" value="No, really, go back!" onclick="history.go(-2)">
+      </form>
     {% else %}
       <form action="" method="POST" enctype="multipart/form-data">
       {% csrf_token %}

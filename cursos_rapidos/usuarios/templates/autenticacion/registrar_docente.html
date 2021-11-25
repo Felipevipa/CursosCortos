@@ -1,0 +1,36 @@
+{% extends 'nombre/base.html' %}
+
+{% block content %}
+
+
+	{% if form_user.errors %}
+
+	<div class="alert alert-warning alert-dismissible fade show" role="alert">
+	    There was an error with your form... {{ form_user.errors }}
+	    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+	{% endif %}
+	
+	<div class="shadow p-4 mb-5 bg-body rounded">
+	<h1>Registro Docentes</h1>
+
+	<form action="{% url 'registrar-docente' %}" method="POST" enctype="multipart/form-data">
+		{% csrf_token %}
+		{{ form_profile.as_p }}
+		{{ form_user.as_p }}
+		  
+		<br><br>
+		<!--
+			*Necesidad
+			*Panorama
+			*De que se trata
+			*Ruta
+		-->
+		<input type="submit" name="" value="Submit" class="btn btn-secondary">
+		
+	</form>
+	</div>
+	<br><br>
+		
+{% endblock %}
