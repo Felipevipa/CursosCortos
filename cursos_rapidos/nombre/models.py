@@ -126,6 +126,9 @@ class Material(models.Model):
     materialExterno    = models.URLField(null=True, blank=True)
     tematica           = models.ForeignKey(Tematica, on_delete=models.SET_NULL, null=True)
 
+    def __str__(self):
+        return 'tematica asociada: %s' % self.tematica
+
 
 class Quiz(models.Model):
     tematica    = models.ForeignKey(Tematica, on_delete=models.SET_NULL, null=True)

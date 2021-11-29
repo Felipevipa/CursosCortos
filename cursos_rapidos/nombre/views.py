@@ -6,6 +6,7 @@ from datetime import datetime
 # from . import version_aplicable
 import os
 from django.views.decorators.clickjacking import xframe_options_exempt
+import re
 
 
 
@@ -41,9 +42,13 @@ def agregar_material(request, carrera, materia, tematica):
 		if form.is_valid():
 			tematica = Tematica.objects.get(titulo=tematica)
 			material = form.save(commit=False)
-			material.tematica = tematica
+			material.tematica = tematica# material.video = re.sub(r"(?ism).*?=(.*?)$", r"https://www.youtube.com/embed/\1", material.video)
+			material.video = re.split(r"(?ism).*?=(.*?)$", material.video)
+			material.video = material.video[1][0:material.video[1].index('&')]
 			material.save()
-			return HttpResponseRedirect('?submitted=True')
+			next = request.POST.get('next', '/')
+			return HttpResponseRedirect(next)
+			# return redirect('home')
 	else:
 		form = MaterialForm()
 		if 'submitted' in request.GET:
@@ -214,9 +219,11 @@ def ver_tematica(request, carrera, materia, titulo):
 	materia = get_object_or_404(Materia, carrera=carrera, nombre=materia)
 	tematica = get_object_or_404(Tematica, materia=materia, titulo=titulo)
 	material_list = Material.objects.filter(tematica=tematica)
+	form = MaterialForm()
 	context = {
 		'tematica': tematica,
 		'material_list': material_list,
+		'form': form,
 	}
 	return render(request, "nombre/ver_tematica.html", context)
 
@@ -233,7 +240,7 @@ def ver_materia(request, carrera, nombre):
 			print(mater)
 			material_list.append((tematica.titulo, mater))
 
-	print(material_list)
+
 	context = {
 		'materia': materia,
 		'tematicas_list': tematicas_list,
@@ -301,7 +308,7 @@ def home(request):
 	for curso in cursos:
 		material = Material.objects.filter(tematica=curso)
 		for mater in material:	
-			print(mater)
+
 			material_list.append((curso.titulo, mater))
 
 	context = {
