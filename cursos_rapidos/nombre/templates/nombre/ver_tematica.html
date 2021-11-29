@@ -1,6 +1,8 @@
 {% extends 'nombre/base.html' %}
 
 {% block content %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js" integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4" crossorigin="anonymous"></script>
 <a href="../" class="btn btn-secondary d-inline">Volver</a>
 <br><br>
 <div class="shadow p-4 mb-5 bg-body rounded">
@@ -14,7 +16,7 @@
 <img src="{{ material.imagen.url }}" class="user-image img-responsive"/> <br>
 {% endif %}
 {% if material.video %}
-<iframe width="560" height="315" src="{{ material.video }}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe><br>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/{{ material.video }}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe><br>
 {% endif %}
 {% if material.materialExterno %}
 <iframe src="{{ material.materialExterno }}" style="display: hidden; width: 80%; height: 500px" title="description" allowfullscreen></iframe><br>
@@ -22,9 +24,115 @@
 
 {% endfor %}
 </center>
+
+
+
+
+{% if user.is_authenticated %}
+<br><br>
+{% load static %}
+<p>
+  <a class="btn btn-primary" data-toggle="collapse" href="#collapseOptions" role="button" aria-expanded="false" aria-controls="collapseOptions">
+    Agregar Material
+  </a>
+</p>
+
+<div class="shadow p-4 mb-5 bg-body rounded collapse" id="collapseOptions">
+  <div class="d-flex justify-content-around">
+  <a class="" data-toggle="collapse" href="#collapseContent" role="button" aria-expanded="false" aria-controls="collapseContent">Agregar Titulo</a>|
+  <a class="" data-toggle="collapse" href="#collapseTextForm" role="button" aria-expanded="false" aria-controls="collapseTextForm">Agregar Texto</a>|
+  <a class="" data-toggle="collapse" href="#collapseImageForm" role="button" aria-expanded="false" aria-controls="collapseImageForm">Agregar Imagen</a>|
+  <a class="" data-toggle="collapse" href="#collapseVideoForm" role="button" aria-expanded="false" aria-controls="collapseVideoForm">Agregar Video</a>|
+  <a class="" data-toggle="collapse" href="#collapseMEForm" role="button" aria-expanded="false" aria-controls="collapseMEForm">Agregar Material Externo</a>
+  </div>
+  <div>
+    <!--INICIO Formulario para agregar texto -->
+    <div class="collapse" id="collapseTextForm">
+      <br>
+      <form action="{{ request.path }}agregar_material" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.contenido_de_texto }}
+        <input type="hidden" name="next" value="{{ request.path }}"><br>
+        <input type="submit" name="" value="Agregar" class="btn btn-secondary">
+      </form>
+    </div>
+    <!--FIN Formulario para agregar texto -->
+
+    <!--INICIO Formulario para agregar imagen -->
+    <div class="collapse" id="collapseImageForm">
+      <br>
+      <form action="{{ request.path }}agregar_material" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.imagen }}
+        <input type="hidden" name="next" value="{{ request.path }}"><br>
+        <input type="submit" name="" value="Agregar" class="btn btn-secondary">
+      </form>
+    </div>
+    <!--FIN Formulario para agregar imagen -->
+
+    <!--INICIO Formulario para agregar video -->
+    <div class="collapse" id="collapseVideoForm">
+      <br>
+      <form action="{{ request.path }}agregar_material" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.video }}
+        <input type="hidden" name="next" value="{{ request.path }}"><br>
+        <input type="submit" name="" value="Agregar" class="btn btn-secondary">
+      </form>
+    </div>
+    <!--FIN Formulario para agregar video -->
+
+    <!--INICIO Formulario para agregar Material Externo -->
+    <div class="collapse" id="collapseMEForm">
+      <br>
+      <form action="{{ request.path }}agregar_material" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.materialExterno }}
+        <input type="hidden" name="next" value="{{ request.path }}"><br>
+        <input type="submit" name="" value="Agregar" class="btn btn-secondary">
+      </form>
+    </div>
+    <!--FIN Formulario para agregar Material Externo -->
+
+  </div>
+</div>
+
+<div class="shadow p-4 mb-5 bg-body rounded collapse" id="collapseContent">
+  <center>
+    <h1> Agregar Material </h1>
+    <br><br>
+    {% if submitted %}
+      Tu Material fue agregado correctamente
+      <a href="../" class="btn btn-secondary">Volver</a>
+      <form>
+          <input type="button" value="No, really, go back!" onclick="history.go(-2)">
+      </form>
+    {% else %}
+      <form action="{{ request.path }}agregar_material" method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <input type="hidden" name="next" value="{{ request.path }}">
+      <input type="submit" name="" value="Submit" class="btn btn-secondary">
+    </form>
+    
+    {% endif %}
+  </center>
+</div>
+
+
+
+
+
 </div>
 <a href="{% url 'agregar-material' tematica.materia.carrera tematica.materia tematica.titulo %}" class="btn btn-secondary d-inline">Agregar Material</a>
-<br>
+
+
+
+
+
+
+
+{% endif %}
 {% endblock %}
 
 
