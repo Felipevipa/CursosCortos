@@ -7,13 +7,16 @@
 <br><br>
 <div class="shadow p-4 mb-5 bg-body rounded">
 	{% for quiz in quizes %}
-<a href="{{ quiz.get_absolute_url }}" class="btn btn-secondary d-inline">Quiz</a>
+    <a href="{{ quiz.get_absolute_url }}" class="btn btn-secondary d-inline">Quiz</a>
 	{% endfor %}
 <center>
 
 {% for material in material_list %}
 {% if material.contenido_de_texto %}
-{{ material.contenido_de_texto }} <br>
+<div class="mydivouter">  
+<p style="word-wrap: break-word;">{{ material.contenido_de_texto }}</p>
+<button type="button" class="mybuttonoverlap btn btn-link" style="font-size : 20px;">+</button>
+</div>
 {% endif %}
 {% if material.imagen %}
 <img src="{{ material.imagen.url }}" class="user-image img-responsive"/> <br>
@@ -132,7 +135,25 @@
 
 
 
+<style>
 
+.mydivouter {
+    position: relative;
+    top: 50px;
+}
+.mybuttonoverlap{
+    height: 40px;
+    right: 0px;
+    position: absolute;
+    top: 0px;
+    width: 40px;
+    z-index: 1;
+    display: none;
+}
+.mydivouter:hover .mybuttonoverlap{ 
+display:block;
+}
+</style>
 
 
 {% endif %}
