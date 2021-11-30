@@ -43,8 +43,10 @@ def agregar_material(request, carrera, materia, tematica):
 			tematica = Tematica.objects.get(titulo=tematica)
 			material = form.save(commit=False)
 			material.tematica = tematica# material.video = re.sub(r"(?ism).*?=(.*?)$", r"https://www.youtube.com/embed/\1", material.video)
-			material.video = re.split(r"(?ism).*?=(.*?)$", material.video)
-			material.video = material.video[1][0:material.video[1].index('&')]
+			print(material.video)
+			if material.video != None:
+				material.video = re.split(r"(?ism).*?=(.*?)$", material.video)
+				material.video = material.video[1][0:material.video[1].index('&')]
 			material.save()
 			next = request.POST.get('next', '/')
 			return HttpResponseRedirect(next)
