@@ -6,6 +6,9 @@
 <a href="../" class="btn btn-secondary d-inline">Volver</a>
 <br><br>
 <div class="shadow p-4 mb-5 bg-body rounded">
+	{% for quiz in quizes %}
+<a href="{{ quiz.get_absolute_url }}" class="btn btn-secondary d-inline">Quiz</a>
+	{% endfor %}
 <center>
 
 {% for material in material_list %}

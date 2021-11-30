@@ -1,0 +1,8 @@
+{% extends 'nombre/base.html' %}
+
+{% block content %}
+{% for qui in quiz %}
+{{ qui.tematica.titulo }}
+{% endfor %}
+
+{% endblock %}
