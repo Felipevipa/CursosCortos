@@ -34,6 +34,20 @@ def preguntar(request):
 
 
 
+def calificaciones(request):
+	print(request.user.groups.filter(name="Estudiantes").exists())
+	obj = EstudianteProfile.objects.get(user=request.user) 
+	calificaciones = Calificacion.objects.filter(estudiante=obj)
+	for calificacion in calificaciones:
+		valor=calificacion.nota
+		print(valor)
+	
+	context = {"object": obj,
+				"calificaciones": calificaciones}
+	return render(request, 'nombre/calificaciones.html', context)
+	
+
+
 def quiz(request, carrera, materia, tematica, id):
 	carrera = get_object_or_404(Carrera, nombre=carrera)
 	materia = get_object_or_404(Materia, carrera=carrera, nombre=materia)
