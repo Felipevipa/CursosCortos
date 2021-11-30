@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import EstudianteProfile, Carrera, Materia, Tematica, Material, Quiz
+from .models import EstudianteProfile, Carrera, Materia, Tematica, Material, Quiz, Calificacion
 from .forms import RawStudentForm, CarreraForm, MateriaForm, TematicaForm, MaterialForm
 from django.http import HttpResponseRedirect
 from datetime import datetime
