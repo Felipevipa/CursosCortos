@@ -131,6 +131,7 @@ class Material(models.Model):
 
 
 class Quiz(models.Model):
+    titulo      = models.CharField(max_length=80, blank=True)
     tematica    = models.ForeignKey(Tematica, on_delete=models.SET_NULL, null=True)
 
 

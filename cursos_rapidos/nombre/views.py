@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import EstudianteProfile, Carrera, Materia, Tematica, Material
+from .models import EstudianteProfile, Carrera, Materia, Tematica, Material, Quiz
 from .forms import RawStudentForm, CarreraForm, MateriaForm, TematicaForm, MaterialForm
 from django.http import HttpResponseRedirect
 from datetime import datetime
@@ -31,6 +31,20 @@ def preguntar(request):
 
 		}
 		return render(request, "nombre/preguntar.html", context)
+
+
+
+def quiz(request, carrera, materia, tematica, id):
+	carrera = get_object_or_404(Carrera, nombre=carrera)
+	materia = get_object_or_404(Materia, carrera=carrera, nombre=materia)
+	tematica = get_object_or_404(Tematica, materia=materia, titulo=tematica)
+	#quiz = get_object_or_404(Quiz, tematica=tematica, id=id)
+	quiz = Quiz.objects.filter(id=id)
+	print(quiz)
+	context = {
+		'quiz': quiz,
+	}
+	return render(request, "nombre/quiz.html", context)
 
 	
 
@@ -221,11 +235,13 @@ def ver_tematica(request, carrera, materia, titulo):
 	materia = get_object_or_404(Materia, carrera=carrera, nombre=materia)
 	tematica = get_object_or_404(Tematica, materia=materia, titulo=titulo)
 	material_list = Material.objects.filter(tematica=tematica)
+	quizes = Quiz.objects.filter(tematica=tematica)
 	form = MaterialForm()
 	context = {
 		'tematica': tematica,
 		'material_list': material_list,
 		'form': form,
+		'quizes': quizes,
 	}
 	return render(request, "nombre/ver_tematica.html", context)
 
