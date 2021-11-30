@@ -131,6 +131,13 @@ class Quiz(models.Model):
     tematica    = models.ForeignKey(Tematica, on_delete=models.SET_NULL, null=True)
 
 
+    def __str__(self):
+        return '%s - %s' % (self.id, self.tematica)
+
+    def get_absolute_url(self):
+        return reverse("quiz", kwargs={'carrera': self.tematica.materia.carrera, 'materia': self.tematica.materia.nombre, 'tematica': self.tematica.titulo, 'id': self.id,})
+
+
 class Calificacion(models.Model):
     fecha       = models.DateTimeField()
     tiempo      = models.TimeField()

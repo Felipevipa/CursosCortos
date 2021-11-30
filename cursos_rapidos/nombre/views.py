@@ -1,12 +1,27 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import EstudianteProfile, Carrera, Materia, Tematica, Material
+from .models import EstudianteProfile, Carrera, Materia, Tematica, Material, Quiz
 from .forms import RawStudentForm, CarreraForm, MateriaForm, TematicaForm, MaterialForm
 from django.http import HttpResponseRedirect
 from datetime import datetime
-# from . import version_aplicable
+#from . import version_aplicable
 import os
 from django.views.decorators.clickjacking import xframe_options_exempt
 
+
+
+
+
+def quiz(request, carrera, materia, tematica, id):
+	carrera = get_object_or_404(Carrera, nombre=carrera)
+	materia = get_object_or_404(Materia, carrera=carrera, nombre=materia)
+	tematica = get_object_or_404(Tematica, materia=materia, titulo=tematica)
+	#quiz = get_object_or_404(Quiz, tematica=tematica, id=id)
+	quiz = Quiz.objects.filter(id=id)
+	print(quiz)
+	context = {
+		'quiz': quiz,
+	}
+	return render(request, "nombre/quiz.html", context)
 
 
 @xframe_options_exempt
@@ -18,7 +33,7 @@ def preguntar(request):
 
 		if request.user.groups.filter(name="Estudiantes").exists():
   			respuesta = "Acceso concedido"
-		# respuesta = version_aplicable.pregunta_respuesta_escrito(pregunta)
+		#respuesta = version_aplicable.pregunta_respuesta_escrito(pregunta)
 		context = {
 			'pregunta': pregunta,
 			'respuesta': respuesta,
@@ -214,9 +229,11 @@ def ver_tematica(request, carrera, materia, titulo):
 	materia = get_object_or_404(Materia, carrera=carrera, nombre=materia)
 	tematica = get_object_or_404(Tematica, materia=materia, titulo=titulo)
 	material_list = Material.objects.filter(tematica=tematica)
+	quizes = Quiz.objects.filter(tematica=tematica)
 	context = {
 		'tematica': tematica,
 		'material_list': material_list,
+		'quizes': quizes,
 	}
 	return render(request, "nombre/ver_tematica.html", context)
 
