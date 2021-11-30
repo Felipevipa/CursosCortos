@@ -1,0 +1,33 @@
+{% extends 'nombre/base.html' %}
+
+{% block content %}
+
+
+<td><h1>Calificaciones</h1> </td> 
+
+<div class="shadow p-4 mb-5 bg-body rounded">
+    <table class="table">
+        <tr>  
+            <th>Tematica</th>
+            <th>Quiz</th>
+            <th>Nota</th>
+            <th>Fecha</th>
+        </tr>
+        <tr>  
+        {% for calificacion in calificaciones %}
+            <td>
+                {{ calificacion.quiz.tematica.titulo }}
+            </td>
+            <td>
+                {{ calificacion.quiz }} 
+            </td>
+            <td>
+                {{ calificacion.nota }}
+            </td>
+            <td>
+                {{ calificacion.fecha }}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
