@@ -1,8 +1,20 @@
 from django import forms
 import datetime
-from .models import EstudianteProfile, Carrera, Materia, Tematica, Material, Quiz
+from .models import EstudianteProfile, Carrera, Materia, Tematica, Material, Quiz, Pregunta
 
-
+class PreguntaForm(forms.ModelForm):
+	
+	class Meta:
+		CHOICES=[('1','Opcion Multiple'),('2','Abierta')]
+		model = Pregunta
+		exclude = {'quiz'}
+		labels = {
+			'titulo': '',
+		}
+		widgets = {
+			'titulo': forms.TextInput(attrs={'class':'form-control', 'placeholder':'Titulo',}),
+			'answer_type': forms.RadioSelect(choices=CHOICES)
+		}
 
 class QuizForm(forms.ModelForm):
 	class Meta:

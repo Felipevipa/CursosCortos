@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import EstudianteProfile, Carrera, Materia, Tematica, Material, Quiz, Calificacion
-from .forms import RawStudentForm, CarreraForm, MateriaForm, TematicaForm, MaterialForm, QuizForm
+from .forms import RawStudentForm, CarreraForm, MateriaForm, TematicaForm, MaterialForm, QuizForm,PreguntaForm
 from django.http import HttpResponseRedirect
 from datetime import datetime
 # from . import version_aplicable
@@ -32,7 +32,28 @@ def preguntar(request):
 		}
 		return render(request, "nombre/preguntar.html", context)
 
+def agregar_pregunta(request, carrera, materia, tematica,quiz):
+	submitted = False
+	if request.method == 'POST':
+		form = PreguntaForm(request.POST)
+		if form.is_valid():
+			#form.save()
+			quiz = Quiz.objects.get(pk=quiz)
+			pregunta= form.save(commit=False)
+			pregunta.quiz=quiz
+			pregunta.save()
+			# return HttpResponseRedirect('home')
+			return redirect('home')
+	else:
+		form = PreguntaForm()
+		if 'submitted' in request.GET:
+			submitted = True
 
+	context = {
+		'form': form,
+		'submitted': submitted,
+	}
+	return render(request, 'nombre/agregar_pregunta.html', context)
 
 def calificaciones(request):
 	print(request.user.groups.filter(name="Estudiantes").exists())

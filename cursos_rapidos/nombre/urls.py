@@ -18,6 +18,7 @@ urlpatterns = [
     path('carreras/<carrera>/<materia>/eliminar_tematica/<tematica_id>',views.eliminar_tematica,    name="eliminar-tematica"),
     path('carreras/<carrera>/<materia>/<tematica>/agregar_material',    views.agregar_material,     name="agregar-material"),
     path('carreras/<carrera>/<materia>/<tematica>/agregar_quiz',        views.agregar_quiz,         name="agregar-quiz"),
+    path('carreras/<carrera>/<materia>/<tematica>/<quiz>/agregar_pregunta',views.agregar_pregunta,  name="agregar-pregunta"),
     path('carreras/<str:carrera>/<str:materia>/<str:titulo>/',          views.ver_tematica,         name="ver-tematica"),
     path('carreras/<str:carrera>/<str:materia>/<tematica>/<id>',        views.quiz,                 name="quiz"),
     path('search_tematica/',                                            views.search_tematica,      name="search-tematica"),
