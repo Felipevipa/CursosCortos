@@ -1,0 +1,14 @@
+{% extends 'nombre/base.html' %}
+
+{% block content %}
+{% if user.is_authenticated %}
+<form action="" method="POST">
+{% csrf_token %}
+{{ form.as_p }}
+<input type="submit" name="" value="Submit" class="btn btn-secondary">
+</form>
+    
+
+
+{% endif %}
+{% endblock %}

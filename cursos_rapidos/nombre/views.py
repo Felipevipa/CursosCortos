@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import EstudianteProfile, Carrera, Materia, Tematica, Material, Quiz, Calificacion
-from .forms import RawStudentForm, CarreraForm, MateriaForm, TematicaForm, MaterialForm
+from .forms import RawStudentForm, CarreraForm, MateriaForm, TematicaForm, MaterialForm, QuizForm
 from django.http import HttpResponseRedirect
 from datetime import datetime
 # from . import version_aplicable
@@ -60,7 +60,28 @@ def quiz(request, carrera, materia, tematica, id):
 	}
 	return render(request, "nombre/quiz.html", context)
 
-	
+
+def agregar_quiz(request, carrera, materia, tematica):
+	submitted = False
+	if request.method == 'POST':
+		form = QuizForm(request.POST)
+		if form.is_valid():
+			form.save()
+			# return HttpResponseRedirect('home')
+			return redirect('home')
+	else:
+		form = QuizForm()
+		if 'submitted' in request.GET:
+			submitted = True
+
+	context = {
+		'form': form,
+		'submitted': submitted,
+	}
+	return render(request, 'nombre/agregar_quiz.html', context)
+
+
+
 
 def agregar_material(request, carrera, materia, tematica):
 	submitted = False

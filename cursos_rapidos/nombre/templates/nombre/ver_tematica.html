@@ -11,12 +11,17 @@
 	{% endfor %}
 <center>
 
+
 {% for material in material_list %}
+<div class="mydivouter dropdown">  
+{% if material.titulo %}
+  <h3>{{ material.titulo }}</h3>  
+{% endif %}
 {% if material.contenido_de_texto %}
-<div class="mydivouter">  
+
 <p style="word-wrap: break-word;">{{ material.contenido_de_texto }}</p>
-<button type="button" class="mybuttonoverlap btn btn-link" style="font-size : 20px;">+</button>
-</div>
+
+
 {% endif %}
 {% if material.imagen %}
 <img src="{{ material.imagen.url }}" class="user-image img-responsive"/> <br>
@@ -27,7 +32,13 @@
 {% if material.materialExterno %}
 <iframe src="{{ material.materialExterno }}" style="display: hidden; width: 80%; height: 500px" title="description" allowfullscreen></iframe><br>
 {% endif %}
-
+<button type="button" class="mybuttonoverlap btn btn-link dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="font-size : 20px;">+</button>
+<div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="right: 0; left: auto;">
+    <a class="dropdown-item" href="#">Action</a>
+    <a class="dropdown-item" href="#">Another action</a>
+    <a class="dropdown-item" href="#">Something else here</a>
+</div>
+</div>
 {% endfor %}
 </center>
 
@@ -45,13 +56,27 @@
 
 <div class="shadow p-4 mb-5 bg-body rounded collapse" id="collapseOptions">
   <div class="d-flex justify-content-around">
-  <a class="" data-toggle="collapse" href="#collapseContent" role="button" aria-expanded="false" aria-controls="collapseContent">Agregar Titulo</a>|
+  <a class="" data-toggle="collapse" href="#collapseTituloForm" role="button" aria-expanded="false" aria-controls="collapseContent">Agregar Titulo</a>|
   <a class="" data-toggle="collapse" href="#collapseTextForm" role="button" aria-expanded="false" aria-controls="collapseTextForm">Agregar Texto</a>|
   <a class="" data-toggle="collapse" href="#collapseImageForm" role="button" aria-expanded="false" aria-controls="collapseImageForm">Agregar Imagen</a>|
   <a class="" data-toggle="collapse" href="#collapseVideoForm" role="button" aria-expanded="false" aria-controls="collapseVideoForm">Agregar Video</a>|
   <a class="" data-toggle="collapse" href="#collapseMEForm" role="button" aria-expanded="false" aria-controls="collapseMEForm">Agregar Material Externo</a>
   </div>
   <div>
+
+    <!--INICIO Formulario para titulo -->
+    <div class="collapse" id="collapseTituloForm">
+      <br>
+      <form action="{{ request.path }}agregar_material" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.titulo }}
+        <input type="hidden" name="next" value="{{ request.path }}"><br>
+        <input type="submit" name="" value="Agregar" class="btn btn-secondary">
+      </form>
+    </div>
+    <!--FIN Formulario para agregar titulo -->
+
+
     <!--INICIO Formulario para agregar texto -->
     <div class="collapse" id="collapseTextForm">
       <br>
@@ -139,7 +164,7 @@
 
 .mydivouter {
     position: relative;
-    top: 50px;
+    top: 0px;
 }
 .mybuttonoverlap{
     height: 40px;

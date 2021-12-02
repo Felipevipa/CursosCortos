@@ -1,7 +1,19 @@
 from django import forms
 import datetime
-from .models import EstudianteProfile, Carrera, Materia, Tematica, Material
+from .models import EstudianteProfile, Carrera, Materia, Tematica, Material, Quiz
 
+
+
+class QuizForm(forms.ModelForm):
+	class Meta:
+		model = Quiz
+		fields = '__all__'
+		labels = {
+			'titulo': '',
+		}
+		widgets = {
+			'titulo': forms.TextInput(attrs={'class':'form-control', 'placeholder':'Titulo',}),
+		}
 
 
 class MaterialForm(forms.ModelForm):
@@ -9,12 +21,14 @@ class MaterialForm(forms.ModelForm):
 		model = Material
 		exclude = ['tematica']
 		labels = {
+			'titulo': '',
 			'contenido_de_texto': '',
 			'imagen': 'Imagen',
 			'video': '',
 			'materialExterno': '',
 		}
 		widgets = {
+			'titulo': forms.TextInput(attrs={'class':'form-control', 'placeholder':'Titulo',}),
 			'contenido_de_texto': forms.Textarea(attrs={'class':'form-control', 'placeholder':'Contenido de Texto'}),
 			'imagen': forms.FileInput(attrs = {'class': 'form-control',}),
 			'video': forms.TextInput(attrs={'class':'form-control', 'placeholder':'Link del video',}),
