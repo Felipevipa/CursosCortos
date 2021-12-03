@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import EstudianteProfile, Carrera, Materia, Tematica, Material, Quiz, Calificacion
-from .forms import RawStudentForm, CarreraForm, MateriaForm, TematicaForm, MaterialForm, QuizForm
+from .models import EstudianteProfile, Carrera, Materia, Tematica, Material, Quiz, Calificacion, Pregunta, OpcionRespuesta
+from .forms import RawStudentForm, CarreraForm, MateriaForm, TematicaForm, MaterialForm, QuizForm, PreguntaForm, RespuestaForm
 from django.http import HttpResponseRedirect, JsonResponse
 from datetime import datetime
 # from . import version_aplicable
@@ -39,7 +39,7 @@ def calificaciones(request):
 	obj = EstudianteProfile.objects.get(user=request.user) 
 	calificaciones = Calificacion.objects.filter(estudiante=obj)
 	for calificacion in calificaciones:
-		valor=calificacion.nota
+		valor = calificacion.nota
 		print(valor)
 	
 	context = {"object": obj,
@@ -48,9 +48,6 @@ def calificaciones(request):
 
 
 def calificaciones_chart(request):
-	labels = ['label1', 'label2', 'label3', 'label4', 'label5', 'label6', 'label7',]
-	data = [25, 35, 63, 12, 15, 2, 45,]
-
 	estudiante = EstudianteProfile.objects.get(user=request.user)
 	calificaciones = Calificacion.objects.filter(estudiante=estudiante).order_by('-nota')
 
@@ -74,23 +71,30 @@ def quiz(request, carrera, materia, tematica, id):
 	tematica = get_object_or_404(Tematica, materia=materia, titulo=tematica)
 	#quiz = get_object_or_404(Quiz, tematica=tematica, id=id)
 	quiz = Quiz.objects.filter(id=id)
-	print(quiz)
+	preguntas = Pregunta.objects.filter(quiz=id)
+	print(preguntas)
 	context = {
 		'quiz': quiz,
+		'preguntas': preguntas,
 	}
 	return render(request, "nombre/quiz.html", context)
 
 
-def agregar_quiz(request, carrera, materia, tematica):
+
+def agregar_pregunta(request, carrera, materia, tematica, quiz):
 	submitted = False
 	if request.method == 'POST':
-		form = QuizForm(request.POST)
+		form = PreguntaForm(request.POST)
 		if form.is_valid():
-			form.save()
+			#form.save()
+			quiz = Quiz.objects.get(pk=quiz)
+			pregunta= form.save(commit=False)
+			pregunta.quiz=quiz
+			pregunta.save()
 			# return HttpResponseRedirect('home')
 			return redirect('home')
 	else:
-		form = QuizForm()
+		form = PreguntaForm()
 		if 'submitted' in request.GET:
 			submitted = True
 
@@ -98,187 +102,273 @@ def agregar_quiz(request, carrera, materia, tematica):
 		'form': form,
 		'submitted': submitted,
 	}
-	return render(request, 'nombre/agregar_quiz.html', context)
+	return render(request, 'nombre/agregar_pregunta.html', context)
+
+
+
+def agregar_respuesta(request, carrera, materia, tematica, quiz, pregunta):
+	submitted = False
+	if request.method == 'POST':
+		form = RespuestaForm(request.POST)
+		if form.is_valid():
+			#form.save()
+			pregunta = Pregunta.objects.get(pk=pregunta)
+			agregar_respuesta= form.save(commit=False)
+			agregar_respuesta.pregunta=pregunta
+			agregar_respuesta.save() 
+			print(pregunta)
+			# return HttpResponseRedirect('home')
+			return redirect('home')
+	else:
+		form = RespuestaForm()
+		if 'submitted' in request.GET:
+			submitted = True
+
+	context = {
+		'form': form,
+		'submitted': submitted,
+	}
+	return render(request, 'nombre/agregar_respuesta.html', context)
+
+
+
+
+def agregar_quiz(request, carrera, materia, tematica):
+	if request.user.groups.filter(name="Docentes").exists():
+		submitted = False
+		if request.method == 'POST':
+			form = QuizForm(request.POST)
+			if form.is_valid():
+				form.save()
+				# return HttpResponseRedirect('home')
+				return redirect('home')
+		else:
+			form = QuizForm()
+			if 'submitted' in request.GET:
+				submitted = True
+
+		context = {
+			'form': form,
+			'submitted': submitted,
+		}
+		return render(request, 'nombre/agregar_quiz.html', context)
+	else:
+		return redirect('login_requerido')
 
 
 
 
 def agregar_material(request, carrera, materia, tematica):
-	submitted = False
-	if request.method == 'POST':
-		form = MaterialForm(request.POST, request.FILES)
-		print('EL FORMULARIO ES VALIDO' + str(form.is_valid()))
-		if form.is_valid():
-			tematica = Tematica.objects.get(titulo=tematica)
-			material = form.save(commit=False)
-			material.tematica = tematica# material.video = re.sub(r"(?ism).*?=(.*?)$", r"https://www.youtube.com/embed/\1", material.video)
-			print(material.video)
-			if material.video != None:
-				material.video = re.split(r"(?ism).*?=(.*?)$", material.video)
-				material.video = material.video[1][0:material.video[1].index('&')]
-			material.save()
-			next = request.POST.get('next', '/')
-			return HttpResponseRedirect(next)
-			# return redirect('home')
-	else:
-		form = MaterialForm()
-		if 'submitted' in request.GET:
-			submitted = True
+	if request.user.groups.filter(name="Docentes").exists():
+		submitted = False
+		if request.method == 'POST':
+			form = MaterialForm(request.POST, request.FILES)
+			print('EL FORMULARIO ES VALIDO' + str(form.is_valid()))
+			if form.is_valid():
+				tematica = Tematica.objects.get(titulo=tematica)
+				material = form.save(commit=False)
+				material.tematica = tematica# material.video = re.sub(r"(?ism).*?=(.*?)$", r"https://www.youtube.com/embed/\1", material.video)
+				print(material.video)
+				if material.video != None:
+					material.video = re.split(r"(?ism).*?=(.*?)$", material.video)
+					material.video = material.video[1][0:material.video[1].index('&')]
+				material.save()
+				next = request.POST.get('next', '/')
+				return HttpResponseRedirect(next)
+				# return redirect('home')
+		else:
+			form = MaterialForm()
+			if 'submitted' in request.GET:
+				submitted = True
 
-	context = {
-		'form': form,
-		'submitted': submitted,
-	}
-	return render(request, 'nombre/agregar_material.html', context)
+		context = {
+			'form': form,
+			'submitted': submitted,
+		}
+		return render(request, 'nombre/agregar_material.html', context)
+	else:
+		return redirect('login_requerido')
 
 
 def actualizar_material(request, carrera, materia, tematica, id):
-	material = Material.objects.get(pk=id)
-	form = MaterialForm(request.POST or None, instance=material)
-	if form.is_valid():
-		form.save()
-		return redirect('ver-tematica', carrera, materia, tematica)
-	context = {
-		'material': material,
-		'form': form,
-		'page_title': "Actualizar Material",
-	}
-	return render(request, 'nombre/actualizar_material.html', context)
+	if request.user.groups.filter(name="Docentes").exists():
+		material = Material.objects.get(pk=id)
+		form = MaterialForm(request.POST or None, instance=material)
+		if form.is_valid():
+			form.save()
+			return redirect('ver-tematica', carrera, materia, tematica)
+		context = {
+			'material': material,
+			'form': form,
+			'page_title': "Actualizar Material",
+		}
+		return render(request, 'nombre/actualizar_material.html', context)
+	else:
+		return redirect('login_requerido')
 
 
 def eliminar_material(request, carrera, materia, tematica, id):
-	material = Material.objects.get(pk=id)
-	material.delete()
-	return redirect('ver-tematica', carrera, materia, tematica)
+	if request.user.groups.filter(name="Docentes").exists():
+		material = Material.objects.get(pk=id)
+		material.delete()
+		return redirect('ver-tematica', carrera, materia, tematica)
+	else:
+		return redirect('login_requerido')
 
 
 
 def agregar_tematica(request, carrera, materia):
-	submitted = False
-	if request.method == 'POST':
-		form = TematicaForm(request.POST, request.FILES)
-		print('EL FORMULARIO ES VALIDO' + str(form.is_valid()))
-		if form.is_valid():
-			form.save()
-			return HttpResponseRedirect('?submitted=True')
+	if request.user.groups.filter(name="Docentes").exists():
+		submitted = False
+		if request.method == 'POST':
+			form = TematicaForm(request.POST, request.FILES)
+			print('EL FORMULARIO ES VALIDO' + str(form.is_valid()))
+			if form.is_valid():
+				form.save()
+				return HttpResponseRedirect('?submitted=True')
+		else:
+			materia = Materia.objects.get(nombre=materia)
+			form = TematicaForm(initial={'materia': materia})
+			if 'submitted' in request.GET:
+				submitted = True
+
+		context = {
+			'form': form,
+			'submitted': submitted,
+		}
+		return render(request, 'nombre/agregar_tematica.html', context)	
 	else:
-		materia = Materia.objects.get(nombre=materia)
-		form = TematicaForm(initial={'materia': materia})
-		if 'submitted' in request.GET:
-			submitted = True
-
-	context = {
-		'form': form,
-		'submitted': submitted,
-	}
-	return render(request, 'nombre/agregar_tematica.html', context)	
-
+		return redirect('login_requerido')
 
 
 def actualizar_materia(request, carrera, materia_id):
-	materia = Materia.objects.get(pk=materia_id)
-	form = MateriaForm(request.POST or None, instance=materia)
-	if form.is_valid():
-		form.save()
-		return redirect('ver-carrera', carrera)
-	context = {
-		'materia': materia,
-		'form': form,
-		'page_title': "Actualizar Materia",
-	}
-	return render(request, 'nombre/actualizar_materia.html', context)
+	if request.user.groups.filter(name="Docentes").exists():
+		materia = Materia.objects.get(pk=materia_id)
+		form = MateriaForm(request.POST or None, instance=materia)
+		if form.is_valid():
+			form.save()
+			return redirect('ver-carrera', carrera)
+		context = {
+			'materia': materia,
+			'form': form,
+			'page_title': "Actualizar Materia",
+		}
+		return render(request, 'nombre/actualizar_materia.html', context)
+	else:
+		return redirect('login_requerido')
 
 
 def actualizar_tematica(request, carrera, materia, tematica_id):
-	tematica = Tematica.objects.get(pk=tematica_id)
-	form = TematicaForm(request.POST or None, instance=tematica)
-	if form.is_valid():
-		form.save()
-		return redirect('ver-materia', carrera, materia)
+	if request.user.groups.filter(name="Docentes").exists():
+		tematica = Tematica.objects.get(pk=tematica_id)
+		form = TematicaForm(request.POST or None, instance=tematica)
+		if form.is_valid():
+			form.save()
+			return redirect('ver-materia', carrera, materia)
 
-	context = {
-		'carrera': carrera,
-		'materia': materia,
-		'form': form,
-		'page_title': "Actualizar Tematica",
-	}
+		context = {
+			'carrera': carrera,
+			'materia': materia,
+			'form': form,
+			'page_title': "Actualizar Tematica",
+		}
 
-	return render(request, 'nombre/actualizar_tematica.html', context)
+		return render(request, 'nombre/actualizar_tematica.html', context)
+	else:
+		return redirect('login_requerido')
 
 
 def eliminar_tematica(request, carrera, materia, tematica_id):
-	tematica = Tematica.objects.get(pk=tematica_id)
-	tematica.delete()
-	return redirect('ver-materia', carrera, materia)
+	if request.user.groups.filter(name="Docentes").exists():
+		tematica = Tematica.objects.get(pk=tematica_id)
+		tematica.delete()
+		return redirect('ver-materia', carrera, materia)
+	else:
+		return redirect('login_requerido')
 
 
 def eliminar_materia(request, carrera, materia_id):
-	materia = Materia.objects.get(pk=materia_id)
-	materia.delete()
-	return redirect('ver-carrera', carrera)
+	if request.user.groups.filter(name="Docentes").exists():
+		materia = Materia.objects.get(pk=materia_id)
+		materia.delete()
+		return redirect('ver-carrera', carrera)
+	else:
+		return redirect('login_requerido')
 
 
 def eliminar_carrera(request, carrera_id):
-	carrera = Carrera.objects.get(pk=carrera_id)
-	carrera.delete()
-	return redirect('carreras-detail')
+	if request.user.groups.filter(name="Docentes").exists():
+		carrera = Carrera.objects.get(pk=carrera_id)
+		carrera.delete()
+		return redirect('carreras-detail')
+	else:
+		return redirect('login_requerido')
 
 
 def agregar_materia(request, carrera):
-	submitted = False
-	if request.method == 'POST':
-		form = MateriaForm(request.POST)
-		
-		if form.is_valid():
-			form.save()
-			print(carrera)
-			return HttpResponseRedirect('?submitted=True')
-	else:
-		carrera = Carrera.objects.get(nombre=carrera)
-		# form = MateriaForm({'carrera': carrera})
-		form = MateriaForm(initial={'carrera': carrera})
-		if 'submitted' in request.GET:
-			submitted = True
+	if request.user.groups.filter(name="Docentes").exists():
+		submitted = False
+		if request.method == 'POST':
+			form = MateriaForm(request.POST)
+			
+			if form.is_valid():
+				form.save()
+				print(carrera)
+				return HttpResponseRedirect('?submitted=True')
+		else:
+			carrera = Carrera.objects.get(nombre=carrera)
+			# form = MateriaForm({'carrera': carrera})
+			form = MateriaForm(initial={'carrera': carrera})
+			if 'submitted' in request.GET:
+				submitted = True
 
-	context = {
-		'form': form,
-		'submitted': submitted,
-	}
-	return render(request, 'nombre/agregar_materia.html', context)
+		context = {
+			'form': form,
+			'submitted': submitted,
+		}
+		return render(request, 'nombre/agregar_materia.html', context)
+	else:
+		return redirect('login_requerido')
 
 
 
 def actualizar_carrera(request, carrera_id):
-	carrera = Carrera.objects.get(pk=carrera_id)
-	form = CarreraForm(request.POST or None, instance=carrera)
-	if form.is_valid():
-		form.save()
-		return redirect('carreras-detail')
-	context = {
-		'carrera': carrera,
-		'form': form,
-		'page_title': "Actualizar Carrera",
-	}
-	return render(request, 'nombre/actualizar_carrera.html', context)
+	if request.user.groups.filter(name="Docentes").exists():
+		carrera = Carrera.objects.get(pk=carrera_id)
+		form = CarreraForm(request.POST or None, instance=carrera)
+		if form.is_valid():
+			form.save()
+			return redirect('carreras-detail')
+		context = {
+			'carrera': carrera,
+			'form': form,
+			'page_title': "Actualizar Carrera",
+		}
+		return render(request, 'nombre/actualizar_carrera.html', context)
+	else:
+		return redirect('login_requerido')
 
 
 def agregar_carrera(request):
-	submitted = False
-	if request.method == 'POST':
-		form = CarreraForm(request.POST)
-		if form.is_valid():
-			form.save()
-			return HttpResponseRedirect('/agregar_carrera?submitted=True')
-	else:
-		form = CarreraForm
-		if 'submitted' in request.GET:
-			submitted = True
+	if request.user.groups.filter(name="Docentes").exists():
+		submitted = False
+		if request.method == 'POST':
+			form = CarreraForm(request.POST)
+			if form.is_valid():
+				form.save()
+				return HttpResponseRedirect('/agregar_carrera?submitted=True')
+		else:
+			form = CarreraForm
+			if 'submitted' in request.GET:
+				submitted = True
 
-	context = {
-		'form': form,
-		'submitted': submitted,
-	}
-	return render(request, 'nombre/agregar_carrera.html', context)
+		context = {
+			'form': form,
+			'submitted': submitted,
+		}
+		return render(request, 'nombre/agregar_carrera.html', context)
+	else:
+		return redirect('login_requerido')
 
 
 
@@ -369,32 +459,6 @@ def usuario(request):
 	return render(request, "nombre/ver_perfil.html", context)
 
 
-
-def registro(request):
-	student_form = RawStudentForm()
-	if request.method == "POST":
-		student_form = RawStudentForm(request.POST, request.FILES)
-		print('EL FORMULARIO ES VALIDO' + str(student_form.is_valid()))
-		if student_form.is_valid():
-			student_form.save()
-			return redirect("registro")
-		else:
-			context = {
-				'form': student_form
-			}
-			return render(request, 'nombre/registro.html', context)
-
-
-	
-
-	context = {
-		'form': student_form,
-		'tiempo': datetime.now()
-	}
-
-	
-	return render(request, 'nombre/registro.html', context)
-
 def home(request):
 	cursos = Tematica.objects.filter(is_available=True).order_by('-last_updated')
 	material_list = []
@@ -410,5 +474,9 @@ def home(request):
 		'page_title': "UGC",
 		}
 	return render(request, 'nombre/home.html', context)
+
+def login_requerido(request):
+	context = {}
+	return render(request, 'nombre/login_requerido.html', context)
 
 	

@@ -5,7 +5,6 @@ from . import views
 
 urlpatterns = [
     path('',                                                                views.home,                 name="home"),
-    path('registro/',                                                       views.registro,             name="registro"),
     path('ver_perfil/',                                                     views.usuario,              name="user-detail"),
     path('carreras/',                                                       views.carreras_view,        name="carreras-detail"),
     path('carreras/<str:nombre>/',                                          views.ver_carrera,          name="ver-carrera"),
@@ -20,6 +19,8 @@ urlpatterns = [
     path('carreras/<carrera>/<materia>/<tematica>/<id>actualizar_material', views.actualizar_material,  name="actualizar-material"),
     path('carreras/<carrera>/<materia>/<tematica>/<id>eliminar_material',   views.eliminar_material,    name="eliminar-material"),
     path('carreras/<carrera>/<materia>/<tematica>/agregar_quiz',            views.agregar_quiz,         name="agregar-quiz"),
+    path('carreras/<carrera>/<materia>/<tematica>/<quiz>/agregar_pregunta', views.agregar_pregunta,     name="agregar-pregunta"),
+    path('carreras/<carrera>/<materia>/<tematica>/<quiz>/<pregunta>/agregar_respuesta', views.agregar_respuesta,    name="agregar-respuesta"),
     path('carreras/<str:carrera>/<str:materia>/<str:titulo>/',              views.ver_tematica,         name="ver-tematica"),
     path('carreras/<str:carrera>/<str:materia>/<tematica>/<id>',            views.quiz,                 name="quiz"),
     path('search_tematica/',                                                views.search_tematica,      name="search-tematica"),
@@ -29,5 +30,6 @@ urlpatterns = [
     path('preguntar/',                                                      views.preguntar,            name="preguntar"),
     path('calificaciones/',                                                 views.calificaciones,       name="calificaciones"),
     path('calificaciones/chart',                                            views.calificaciones_chart, name="calificaciones_chart"),
-
+    path('login_requerido',                                                 views.login_requerido,      name="login_requerido"),
+       
 ]

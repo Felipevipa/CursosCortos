@@ -158,6 +158,25 @@
 
 </div>
 <a href="{% url 'agregar-material' tematica.materia.carrera tematica.materia tematica.titulo %}" class="btn btn-secondary d-inline">Agregar Material</a>
+<br><br>
+<div class="row row-cols-1 row-cols-md-2 g-2">
+  {% for quiz in quizes %}
+  <!--  <a href="{{ quiz.get_absolute_url }}" class="btn btn-secondary d-inline">Quiz</a> -->
+  <div class="card mb-3 border border-success"style="max-width: 540px;"> 
+    <div class="col-sm-6">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">{{quiz.titulo}}</h5>
+          <p class="card-text"></p>
+          <a href="{{ quiz.get_absolute_url }}" class="btn btn-primary">Quiz</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+    
+</div>
+<a href="{% url 'agregar-quiz' tematica.materia.carrera tematica.materia tematica.titulo  %}" class="btn btn-success">Agregar Quiz</a>
 
 
 

@@ -1,6 +1,37 @@
 from django import forms
 import datetime
-from .models import EstudianteProfile, Carrera, Materia, Tematica, Material, Quiz
+from .models import EstudianteProfile, Carrera, Materia, Tematica, Material, Quiz, Pregunta, OpcionRespuesta
+
+
+
+class RespuestaForm(forms.ModelForm):
+	
+	class Meta:
+		model = OpcionRespuesta
+		exclude = {'pregunta'}
+		labels = {
+			'titulo': '',
+		}
+		widgets = {
+			'titulo': forms.TextInput(attrs={'class':'form-control', 'placeholder':'Titulo',}),
+		}
+
+
+class PreguntaForm(forms.ModelForm):
+	
+	class Meta:
+		CHOICES=[('1','Opcion Multiple'),('2','Abierta')]
+		model = Pregunta
+		exclude = {'quiz'}
+		labels = {
+			'enunciado': 'Digite su pregunta',
+			'answer_type': 'Tipo de respuesta',
+		}
+		widgets = {
+			'enunciado': forms.Textarea(attrs={'class':'form-control', 'placeholder':'','rows':3,}),
+			'answer_type': forms.Select(choices=CHOICES,attrs={'class':'form-control','placeholder':'Seleccione opción de respuesta',}),
+		}
+
 
 
 

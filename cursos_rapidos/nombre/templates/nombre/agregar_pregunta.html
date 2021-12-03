@@ -1,0 +1,16 @@
+{% extends 'nombre/base.html' %}
+
+{% block content %}
+{% if user.is_authenticated %}
+	<center>
+		<h1> Agregar pregunta </h1>
+		<br><br>
+		<form action="" method="POST" enctype="multipart/form-data">
+		{% csrf_token %}
+		{{ form.as_p }}
+		<input type="submit" name="" value="Agregar" class="btn btn-secondary">
+		</form>
+	</center>
+{% endif %}
+
+{% endblock %}

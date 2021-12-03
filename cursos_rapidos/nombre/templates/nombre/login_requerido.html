@@ -1,0 +1,26 @@
+{% extends 'nombre/base.html' %}
+
+{% block content %}
+{% if user.is_authenticated %}
+  <h1>Necesitas permisos para esto....</h1>
+  <a class="nav-link" href="{% url 'home' %}">Pagina Principal</a>
+
+{% else %}
+
+<h1>Lo sentimos, debes ingresar para ver esta pagina</h1>
+
+<a class="nav-link" href="{% url 'login' %}">Ingresar</a>
+
+
+
+{% endif %}
+
+{% load poll_extras %}
+
+{% if request.user|has_group:"Docentes" %} 
+    <p>User belongs to my group 
+{% else %}
+    <p>User doesn't belong to mygroup</p>
+{% endif %}
+
+{% endblock %}

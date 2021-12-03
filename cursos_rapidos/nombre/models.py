@@ -111,7 +111,7 @@ class Pregunta(models.Model):
 
 
 class OpcionRespuesta(models.Model):
-    abierta             = models.CharField(max_length=100, null=True)
-    opcion_multiple     = models.CharField(max_length=100, null=True)
-    respuesta_correcta  = models.BooleanField(default=False)
+    abierta             = models.CharField(max_length=100, null=True, blank=True)
+    opcion_multiple     = models.CharField(max_length=100, null=True, blank=True)
+    respuesta_correcta  = models.BooleanField(default=False, null=True, blank=True)
     pregunta            = models.ForeignKey(Pregunta, on_delete=models.CASCADE, null=True)
