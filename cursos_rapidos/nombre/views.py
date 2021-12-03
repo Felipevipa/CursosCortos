@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import EstudianteProfile, Carrera, Materia, Tematica, Material, Quiz, Calificacion
 from .forms import RawStudentForm, CarreraForm, MateriaForm, TematicaForm, MaterialForm, QuizForm
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from datetime import datetime
 # from . import version_aplicable
 import os
@@ -45,6 +45,26 @@ def calificaciones(request):
 	context = {"object": obj,
 				"calificaciones": calificaciones}
 	return render(request, 'nombre/calificaciones.html', context)
+
+
+def calificaciones_chart(request):
+	labels = ['label1', 'label2', 'label3', 'label4', 'label5', 'label6', 'label7',]
+	data = [25, 35, 63, 12, 15, 2, 45,]
+
+	estudiante = EstudianteProfile.objects.get(user=request.user)
+	calificaciones = Calificacion.objects.filter(estudiante=estudiante).order_by('-nota')
+
+	labels = []
+	data = []
+
+	for calificacion in calificaciones:
+		labels.append(calificacion.quiz.titulo)
+		data.append(calificacion.nota)
+
+	return JsonResponse(data={
+        'labels': labels,
+        'data': data,
+    })
 	
 
 
@@ -110,6 +130,26 @@ def agregar_material(request, carrera, materia, tematica):
 		'submitted': submitted,
 	}
 	return render(request, 'nombre/agregar_material.html', context)
+
+
+def actualizar_material(request, carrera, materia, tematica, id):
+	material = Material.objects.get(pk=id)
+	form = MaterialForm(request.POST or None, instance=material)
+	if form.is_valid():
+		form.save()
+		return redirect('ver-tematica', carrera, materia, tematica)
+	context = {
+		'material': material,
+		'form': form,
+		'page_title': "Actualizar Material",
+	}
+	return render(request, 'nombre/actualizar_material.html', context)
+
+
+def eliminar_material(request, carrera, materia, tematica, id):
+	material = Material.objects.get(pk=id)
+	material.delete()
+	return redirect('ver-tematica', carrera, materia, tematica)
 
 
 

@@ -14,40 +14,42 @@
 
 {% for material in material_list %}
 <div class="mydivouter dropdown">  
+
 {% if material.titulo %}
   <h3>{{ material.titulo }}</h3>  
 {% endif %}
+
 {% if material.contenido_de_texto %}
-
-<p style="word-wrap: break-word;">{{ material.contenido_de_texto }}</p>
-
-
+  <p style="word-wrap: break-word;">{{ material.contenido_de_texto }}</p>
 {% endif %}
+
 {% if material.imagen %}
-<img src="{{ material.imagen.url }}" class="user-image img-responsive"/> <br>
+  <img src="{{ material.imagen.url }}" class="user-image img-responsive"/> <br>
 {% endif %}
+
 {% if material.video %}
-<iframe width="560" height="315" src="https://www.youtube.com/embed/{{ material.video }}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe><br>
+  <iframe width="560" height="315" src="https://www.youtube.com/embed/{{ material.video }}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe><br>
 {% endif %}
+
 {% if material.materialExterno %}
-<iframe src="{{ material.materialExterno }}" style="display: hidden; width: 80%; height: 500px" title="description" allowfullscreen></iframe><br>
+  <iframe src="{{ material.materialExterno }}" style="display: hidden; width: 80%; height: 500px" title="description" allowfullscreen></iframe><br>
 {% endif %}
+
 <button type="button" class="mybuttonoverlap btn btn-link dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="font-size : 20px;">+</button>
 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="right: 0; left: auto;">
-    <a class="dropdown-item" href="#">Action</a>
-    <a class="dropdown-item" href="#">Another action</a>
-    <a class="dropdown-item" href="#">Something else here</a>
+    <a class="dropdown-item" href="{% url 'actualizar-material' material.tematica.materia.carrera material.tematica.materia.nombre material.tematica.titulo material.id %}">Actualizar</a>
+    <a class="dropdown-item" href="{% url 'eliminar-material' material.tematica.materia.carrera material.tematica.materia.nombre material.tematica.titulo material.id %}">Eliminar</a>
 </div>
 </div>
 {% endfor %}
 </center>
 
 
-
+{% load static %}
 
 {% if user.is_authenticated %}
 <br><br>
-{% load static %}
+
 <p>
   <a class="btn btn-primary" data-toggle="collapse" href="#collapseOptions" role="button" aria-expanded="false" aria-controls="collapseOptions">
     Agregar Material
@@ -160,6 +162,8 @@
 
 
 
+
+{% endif %}
 <style>
 
 .mydivouter {
@@ -179,9 +183,6 @@
 display:block;
 }
 </style>
-
-
-{% endif %}
 {% endblock %}
 
 

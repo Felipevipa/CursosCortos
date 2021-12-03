@@ -1,0 +1,45 @@
+<div id="container-chart">
+    <canvas id="calificaciones-chart" data-url="{% url 'calificaciones_chart' %}"></canvas>
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+<script>
+     $(function () {
+
+      var $calificacionesChart = $("#calificaciones-chart");
+      $.ajax({
+        url: $calificacionesChart.data("url"),
+        success: function (data) {
+
+          var ctx = $calificacionesChart[0].getContext("2d");
+
+          new Chart(ctx, {
+            type: 'bar',
+            data: {
+              labels: data.labels,
+              datasets: [{
+                label: 'Nota',
+                backgroundColor: 'rgba(170, 25, 33, 1)',
+                hoverBackgroundColor: 'rgba(170, 25, 33, 0.6)',
+                data: data.data
+              }] 
+            },
+            options: {
+              responsive: true,
+              legend: {
+                position: 'top',
+              },
+              title: {
+                display: true,
+                text: 'Calificaciones'
+              }
+            }
+          });
+
+        }
+      });
+
+    });
+</script>
