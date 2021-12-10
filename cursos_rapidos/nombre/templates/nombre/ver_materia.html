@@ -8,9 +8,12 @@
   <tr>
     <td><h1>Tematicas - {{ materia.nombre }}</h1></td>
     {% if user.is_authenticated %}
+    {% load poll_extras %}
+    {% if request.user|has_group:"Docentes" %}
     <td align="center" class="col-2">
       <a href="{% url 'agregar-tematica' materia.carrera materia.nombre %}" class="btn btn-secondary d-inline">Agregar Tematica</a>
     </td>
+    {% endif %}
     {% endif %}
   </tr>
   {% for tematica in tematicas_list %}
@@ -21,10 +24,13 @@
          </a>
     </td>
     {% if user.is_authenticated %}
+    {% load poll_extras %}
+    {% if request.user|has_group:"Docentes" %}
     <td>
       <a href="{% url 'actualizar-tematica' tematica.materia.carrera.nombre tematica.materia.nombre tematica.id %}" class="btn btn-outline-secondary btn-sm">Actualizar</a>
          <a href="{% url 'eliminar-tematica' tematica.materia.carrera.nombre tematica.materia.nombre tematica.id %}" class="btn btn-outline-danger btn-sm">Eliminar</a>
     </td>
+    {% endif %}
     {% endif %}
   </tr>
   {% endfor %} 

@@ -2,6 +2,7 @@
 
 {% block content %}
 {% if user.is_authenticated %}
+<div class="shadow p-4 mb-5 bg-body rounded">
   <center>
     <h1> Agregar Tematica </h1>
     <br><br>
@@ -12,11 +13,13 @@
       <form action="" method="POST" enctype="multipart/form-data">
       {% csrf_token %}
       {{ form.as_p }}
+      <input type="color" name="tematicaColor1" value="#F4F4F4" id="tematicaColor1">
+      <input type="color" name="tematicaColor2" value="#F4F4F5" id="tematicaColor2"><br>
       <input type="submit" name="" value="Submit" class="btn btn-secondary">
     </form>
-    
     {% endif %}
   </center>
+</div>
 {% else %}
 
 <h1>Lo sentimos, debes ingresar para ver esta pagina</h1>
@@ -24,5 +27,47 @@
 <a class="nav-link" href="{% url 'login' %}">Ingresar</a>
 
 {% endif %}
+
+{% load static %}
+<script type="text/javascript" src="{{ STATIC_URL }} /static/nombre/assets/js/jquery-1.10.2.js"></script>
+<script type="text/javascript">
+
+
+var tematicaColor;
+
+window.addEventListener("load", startup, false);
+
+function startup() {
+  muestrario1 = document.getElementById("tematicaColor1");
+  muestrario1.value = "#ECE9E6";
+  muestrario1.addEventListener("input", actualizarPrimero, false);
+  muestrario1.addEventListener("change", actualizarPrimero, false);
+  muestrario1.select();
+
+  muestrario2 = document.getElementById("tematicaColor2");
+  muestrario2.value = "#FFFFFF";
+  muestrario2.addEventListener("input", actualizarPrimero, false);
+  muestrario2.addEventListener("change", actualizarPrimero, false);
+  muestrario2.select();
+  actualizarPrimero()
+}
+
+function actualizarPrimero(event) {
+  var body = document.getElementById('div-body');
+
+  if (body) {
+   body.style.background = 
+     "linear-gradient(to right, " 
+     + muestrario1.value 
+     + ", " 
+     + muestrario2.value 
+     + ")";
+     css.textContent = body.style.background + ";";
+  }
+}
+
+</script>
+
+
 {% endblock %}
 

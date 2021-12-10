@@ -64,12 +64,19 @@ class Tematica(models.Model):
     docente      = models.ForeignKey(DocenteProfile, on_delete=models.SET_NULL, null=True, blank=True)
     is_available = models.BooleanField(default=False)
     last_updated = models.DateTimeField(auto_now=True)
+    color1       = models.CharField(max_length=9)
+    color2       = models.CharField(max_length=9)
 
     def __str__(self):
         return '%s - %s' % (self.titulo, self.materia)
 
     def get_absolute_url(self):
         return reverse("ver-tematica", kwargs={'carrera': self.materia.carrera, 'materia': self.materia.nombre, 'titulo': self.titulo})
+
+
+class Enrolamiento(models.Model):
+    estudianteProfile   = models.ForeignKey(EstudianteProfile, on_delete=models.SET_NULL, null=True)
+    tematica            = models.ForeignKey(Tematica, on_delete=models.SET_NULL, null=True)
 
 
 class Material(models.Model):
@@ -110,8 +117,18 @@ class Pregunta(models.Model):
     quiz        = models.ForeignKey(Quiz, on_delete=models.SET_NULL, null=True)
 
 
-class OpcionRespuesta(models.Model):
-    abierta             = models.CharField(max_length=100, null=True, blank=True)
+class OpcionRespuestaCerrada(models.Model):
     opcion_multiple     = models.CharField(max_length=100, null=True, blank=True)
     respuesta_correcta  = models.BooleanField(default=False, null=True, blank=True)
     pregunta            = models.ForeignKey(Pregunta, on_delete=models.CASCADE, null=True)
+
+
+class OpcionRespuestaAbierta(models.Model):
+    respuesta           = models.TextField(null=True, blank=True)
+    pregunta            = models.ForeignKey(Pregunta, on_delete=models.SET_NULL, null=True)
+
+
+class RespuestaEstudianteAbierta(models.Model):
+    respuesta           = models.TextField(null=True, blank=True)
+    pregunta            = models.ForeignKey(Pregunta, on_delete=models.SET_NULL, null=True)
+    estudianteProfile   = models.ForeignKey(EstudianteProfile, on_delete=models.SET_NULL, null=True)

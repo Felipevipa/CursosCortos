@@ -1,14 +1,14 @@
 {% extends 'nombre/base.html' %}
 
 {% block content %}
+
+{% load poll_extras %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js" integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4" crossorigin="anonymous"></script>
 <a href="../" class="btn btn-secondary d-inline">Volver</a>
 <br><br>
 <div class="shadow p-4 mb-5 bg-body rounded">
-	{% for quiz in quizes %}
-    <a href="{{ quiz.get_absolute_url }}" class="btn btn-secondary d-inline">Quiz</a>
-	{% endfor %}
+
 <center>
 
 
@@ -35,11 +35,14 @@
   <iframe src="{{ material.materialExterno }}" style="display: hidden; width: 80%; height: 500px" title="description" allowfullscreen></iframe><br>
 {% endif %}
 
+{% load poll_extras %}
+{% if request.user|has_group:"Docentes" %}
 <button type="button" class="mybuttonoverlap btn btn-link dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="font-size : 20px;">+</button>
 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="right: 0; left: auto;">
     <a class="dropdown-item" href="{% url 'actualizar-material' material.tematica.materia.carrera material.tematica.materia.nombre material.tematica.titulo material.id %}">Actualizar</a>
     <a class="dropdown-item" href="{% url 'eliminar-material' material.tematica.materia.carrera material.tematica.materia.nombre material.tematica.titulo material.id %}">Eliminar</a>
 </div>
+{% endif %}
 </div>
 {% endfor %}
 </center>
@@ -48,6 +51,8 @@
 {% load static %}
 
 {% if user.is_authenticated %}
+{% load poll_extras %}
+{% if request.user|has_group:"Docentes" %}
 <br><br>
 
 <p>
@@ -62,7 +67,9 @@
   <a class="" data-toggle="collapse" href="#collapseTextForm" role="button" aria-expanded="false" aria-controls="collapseTextForm">Agregar Texto</a>|
   <a class="" data-toggle="collapse" href="#collapseImageForm" role="button" aria-expanded="false" aria-controls="collapseImageForm">Agregar Imagen</a>|
   <a class="" data-toggle="collapse" href="#collapseVideoForm" role="button" aria-expanded="false" aria-controls="collapseVideoForm">Agregar Video</a>|
-  <a class="" data-toggle="collapse" href="#collapseMEForm" role="button" aria-expanded="false" aria-controls="collapseMEForm">Agregar Material Externo</a>
+  <a class="" data-toggle="collapse" href="#collapseMEForm" role="button" aria-expanded="false" aria-controls="collapseMEForm">Agregar Material Externo</a>|
+  <a href="{% url 'agregar-quiz' tematica.materia.carrera tematica.materia tematica.titulo  %}" class="">Agregar Quiz</a>
+
   </div>
   <div>
 
@@ -129,6 +136,7 @@
 
   </div>
 </div>
+{% endif %}
 
 <div class="shadow p-4 mb-5 bg-body rounded collapse" id="collapseContent">
   <center>
@@ -157,7 +165,12 @@
 
 
 </div>
+
+{% if request.user|has_group:"Docentes" %}
 <a href="{% url 'agregar-material' tematica.materia.carrera tematica.materia tematica.titulo %}" class="btn btn-secondary d-inline">Agregar Material</a>
+{% endif %}
+
+
 <br><br>
 <div class="row row-cols-1 row-cols-md-2 g-2">
   {% for quiz in quizes %}
@@ -176,9 +189,6 @@
   {% endfor %}
     
 </div>
-<a href="{% url 'agregar-quiz' tematica.materia.carrera tematica.materia tematica.titulo  %}" class="btn btn-success">Agregar Quiz</a>
-
-
 
 
 
@@ -202,6 +212,26 @@
 display:block;
 }
 </style>
+
+
+<script type="text/javascript">
+window.addEventListener("load", startup, false);
+
+function startup() {
+  var body = document.getElementById('div-body');
+  if (body) {
+   body.style.background = 
+     "linear-gradient(to right, " 
+     + "{{ tematica.color1 }}"
+     + ", " 
+     + "{{ tematica.color2 }}"
+     + ")";
+     css.textContent = body.style.background + ";";
+  }
+}
+
+</script>
+
 {% endblock %}
 
 

@@ -3,7 +3,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.models import User, Group
 from django.contrib.auth.forms import UserCreationForm
-from nombre.models import EstudianteProfile
+from nombre.models import EstudianteProfile, DocenteProfile
 from .forms import RegistrarUsuarioForm, RegistroEstudiante, RegistroDocente
 
 # Create your views here.
@@ -14,8 +14,10 @@ def login_user(request):
 		user = authenticate(request, username=username, password=password)
 		if user is not None:
 			login(request, user)
-			request.session['foto'] = EstudianteProfile.objects.get(user=user).foto.url
-			print(EstudianteProfile.objects.get(user=user).foto.url)
+			if request.user.groups.filter(name="Estudiantes").exists():
+				request.session['foto'] = EstudianteProfile.objects.get(user=user).foto.url
+			if request.user.groups.filter(name="Docentes").exists():
+				request.session['foto'] = DocenteProfile.objects.get(user=user).foto.url
 			return redirect('home')
 
 

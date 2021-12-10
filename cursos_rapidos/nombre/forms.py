@@ -1,19 +1,45 @@
 from django import forms
 import datetime
-from .models import EstudianteProfile, Carrera, Materia, Tematica, Material, Quiz, Pregunta, OpcionRespuesta
+from .models import *
 
 
 
-class RespuestaForm(forms.ModelForm):
+class CalificacionForm(forms.ModelForm):
+	class Meta:
+		model = Calificacion
+		fields = '__all__'
+
+
+class RespuestaEstudianteAbiertaForm(forms.ModelForm):
+	class Meta:
+		model = RespuestaEstudianteAbierta
+		exclude = ['pregunta']
+
+
+
+class OpcionRespuestaAbiertaForm(forms.ModelForm):
 	
 	class Meta:
-		model = OpcionRespuesta
+		model = OpcionRespuestaAbierta
 		exclude = {'pregunta'}
 		labels = {
-			'titulo': '',
+			'respuesta': '',
 		}
 		widgets = {
-			'titulo': forms.TextInput(attrs={'class':'form-control', 'placeholder':'Titulo',}),
+			'respuesta': forms.Textarea(attrs={'class':'form-control', 'placeholder':'Posible respuesta abierta','rows':5,}),
+		}
+
+
+class OpcionRespuestaCerradaForm(forms.ModelForm):
+	
+	class Meta:
+		model = OpcionRespuestaCerrada
+		exclude = {'pregunta'}
+		labels = {
+			'opcion_multiple': '',
+		}
+		widgets = {
+			'opcion_multiple': forms.TextInput(attrs={'class':'form-control', 'placeholder':'Opcion Multiple',}),
 		}
 
 
@@ -38,7 +64,7 @@ class PreguntaForm(forms.ModelForm):
 class QuizForm(forms.ModelForm):
 	class Meta:
 		model = Quiz
-		fields = '__all__'
+		exclude = ['tematica']
 		labels = {
 			'titulo': '',
 		}
@@ -70,7 +96,7 @@ class MaterialForm(forms.ModelForm):
 class TematicaForm(forms.ModelForm):
 	class Meta:
 		model = Tematica
-		fields = '__all__'
+		exclude = ['color1', 'color2']
 		labels = {
 			'imagen': 'Portada',
 			'titulo': '',

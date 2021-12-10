@@ -6,17 +6,23 @@
   <tr>  
     <td><h1>Carreras</h1> </td> 
     {% if user.is_authenticated %}
+    {% load poll_extras %}
+    {% if request.user|has_group:"Docentes" %}
     <td align="center" class="col-2"><a href="{% url 'agregar-carrera' %}" class="btn btn-secondary">Agregar Carrera</a>
     </td>
+    {% endif %}
     {% endif %}
   </tr>
   {% for carrera in carrera_list %}
   <tr>  
     <td><a href="{{ carrera.get_absolute_url }}" class="list-group-item list-group-item-action">{{ carrera }}</a></td> 
     {% if user.is_authenticated %}
+    {% load poll_extras %}
+    {% if request.user|has_group:"Docentes" %}
     <td align="center"><a href="{% url 'actualizar-carrera' carrera.id %}" class="btn btn-outline-secondary btn-sm">Actualizar</a>
       <a href="{% url 'eliminar-carrera' carrera.id %}" class="btn btn-outline-danger btn-sm">Eliminar</a>
     </td>
+    {% endif %}
     {% endif %}
   </tr>
   {% endfor %}

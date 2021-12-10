@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import EstudianteProfile, Carrera, Calificacion, Tematica, Quiz, Material, Pregunta, OpcionRespuesta, Materia, DocenteProfile
+from .models import EstudianteProfile, Carrera, Calificacion, Tematica, Quiz, Material, Pregunta, OpcionRespuestaCerrada, OpcionRespuestaAbierta, Materia, DocenteProfile, Enrolamiento, RespuestaEstudianteAbierta
 # Register your models here.
 
 admin.site.register(EstudianteProfile)
@@ -9,9 +9,12 @@ admin.site.register(Calificacion)
 admin.site.register(Quiz)
 admin.site.register(Material)
 admin.site.register(Pregunta)
-admin.site.register(OpcionRespuesta)
+admin.site.register(OpcionRespuestaCerrada)
+admin.site.register(OpcionRespuestaAbierta)
+admin.site.register(Enrolamiento)
 admin.site.register(Materia)
 admin.site.register(DocenteProfile)
+admin.site.register(RespuestaEstudianteAbierta)
 
 
 # @admin.register(EstudianteProfile)

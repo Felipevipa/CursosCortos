@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import EstudianteProfile, Carrera, Materia, Tematica, Material, Quiz, Calificacion, Pregunta, OpcionRespuesta
-from .forms import RawStudentForm, CarreraForm, MateriaForm, TematicaForm, MaterialForm, QuizForm, PreguntaForm, RespuestaForm
-from django.http import HttpResponseRedirect, JsonResponse
+from .models import EstudianteProfile, DocenteProfile, Carrera, Materia, Tematica, Material, Quiz, Calificacion, Pregunta, OpcionRespuestaCerrada
+from .forms import *
+from django.http import HttpResponseRedirect, JsonResponse, HttpResponseNotFound
 from datetime import datetime
+import time
 # from . import version_aplicable
 import os
 from django.views.decorators.clickjacking import xframe_options_exempt
@@ -37,10 +38,9 @@ def preguntar(request):
 def calificaciones(request):
 	print(request.user.groups.filter(name="Estudiantes").exists())
 	obj = EstudianteProfile.objects.get(user=request.user) 
-	calificaciones = Calificacion.objects.filter(estudiante=obj)
+	calificaciones = Calificacion.objects.filter(estudiante=obj).order_by('-fecha')
 	for calificacion in calificaciones:
 		valor = calificacion.nota
-		print(valor)
 	
 	context = {"object": obj,
 				"calificaciones": calificaciones}
@@ -66,53 +66,107 @@ def calificaciones_chart(request):
 
 
 def quiz(request, carrera, materia, tematica, id):
-	carrera = get_object_or_404(Carrera, nombre=carrera)
-	materia = get_object_or_404(Materia, carrera=carrera, nombre=materia)
-	tematica = get_object_or_404(Tematica, materia=materia, titulo=tematica)
-	#quiz = get_object_or_404(Quiz, tematica=tematica, id=id)
-	quiz = Quiz.objects.filter(id=id)
-	preguntas = Pregunta.objects.filter(quiz=id)
-	print(preguntas)
-	context = {
-		'quiz': quiz,
-		'preguntas': preguntas,
-	}
-	return render(request, "nombre/quiz.html", context)
+	quiz = Quiz.objects.get(pk=id)
+	if request.method == 'POST':
+		preguntas = Pregunta.objects.filter(quiz=quiz)
+		acum = 0
+		for pregunta in preguntas:
+			if pregunta.answer_type == '1':
+				respuestaEstudiante = request.POST[str(pregunta.id)]
+				respuestaPregunta = OpcionRespuestaCerrada.objects.get(pregunta=pregunta, respuesta_correcta=True)
+
+				acum += respuestaEstudiante == respuestaPregunta.opcion_multiple
+
+			if pregunta.answer_type == '2':
+				respuestaEstudiante = request.POST[str(pregunta.id)]
+				form = RespuestaEstudianteAbiertaForm()
+				respuestaAbierta = form.save(commit=False)
+				respuestaAbierta.respuesta = respuestaEstudiante
+				respuestaAbierta.pregunta = pregunta
+				respuestaAbierta.estudianteProfile = EstudianteProfile.objects.get(user=request.user)
+				respuestaAbierta.save()
+				print(respuestaEstudiante)
+
+
+		nota = acum * (50/len(preguntas))
+		current_time = datetime.now().strftime("%H:%M:%S")
+		tiempo = datetime.strptime(current_time, '%H:%M:%S') - datetime.strptime(request.session['tiempoquiz'], '%H:%M:%S')
+
+		form = CalificacionForm()
+		calificacion = form.save(commit=False)
+		calificacion.fecha = datetime.now()
+		calificacion.tiempo = str(tiempo)
+		calificacion.nota = nota
+		calificacion.quiz = quiz
+		calificacion.estudiante = EstudianteProfile.objects.get(user=request.user)
+		calificacion.save()
+
+		return redirect("calificaciones")
+
+
+
+	if quiz.tematica.titulo  == tematica and  quiz.tematica.materia.nombre == materia and quiz.tematica.materia.carrera.nombre == carrera:
+		preguntas = Pregunta.objects.filter(quiz=quiz)
+		opcionesRespuesta = []
+		for pregunta in preguntas:
+			if pregunta.answer_type == '1':
+				opcionesRespuesta.append((pregunta, OpcionRespuestaCerrada.objects.filter(pregunta=pregunta).order_by('?')))
+			elif pregunta.answer_type == '2':
+				opcionesRespuesta.append((pregunta, 'abierta'))
+		context = {
+			'quiz': quiz,
+			'opcionesRespuesta': opcionesRespuesta,
+		}
+		request.session['tiempoquiz'] = datetime.now().strftime("%H:%M:%S")
+
+		return render(request, "nombre/quiz.html", context)
+
+	else: 
+		return HttpResponseNotFound()
+
 
 
 
 def agregar_pregunta(request, carrera, materia, tematica, quiz):
-	submitted = False
-	if request.method == 'POST':
-		form = PreguntaForm(request.POST)
-		if form.is_valid():
-			#form.save()
-			quiz = Quiz.objects.get(pk=quiz)
-			pregunta= form.save(commit=False)
-			pregunta.quiz=quiz
-			pregunta.save()
-			# return HttpResponseRedirect('home')
-			return redirect('home')
-	else:
-		form = PreguntaForm()
-		if 'submitted' in request.GET:
-			submitted = True
+	if request.user.groups.filter(name="Docentes").exists():
+		submitted = False
+		if request.method == 'POST':
+			form = PreguntaForm(request.POST)
+			if form.is_valid():
+				#form.save()
+				quiz = Quiz.objects.get(pk=quiz)
+				pregunta= form.save(commit=False)
+				pregunta.quiz=quiz
+				pregunta.save()
+				# return HttpResponseRedirect('home')
+				return redirect('home')
+		else:
+			form = PreguntaForm()
+			if 'submitted' in request.GET:
+				submitted = True
 
-	context = {
-		'form': form,
-		'submitted': submitted,
-	}
-	return render(request, 'nombre/agregar_pregunta.html', context)
+		context = {
+			'form': form,
+			'submitted': submitted,
+		}
+		return render(request, 'nombre/agregar_pregunta.html', context)
+	else:
+		return redirect('login_requerido')
 
 
 
 def agregar_respuesta(request, carrera, materia, tematica, quiz, pregunta):
 	submitted = False
+	pregunta = Pregunta.objects.get(pk=pregunta)
+	answer_type = pregunta.answer_type
 	if request.method == 'POST':
-		form = RespuestaForm(request.POST)
+		if answer_type == "1":
+			form = OpcionRespuestaCerradaForm(request.POST)
+		elif answer_type == "2":
+			form = OpcionRespuestaAbiertaForm(request.POST)
+		
 		if form.is_valid():
 			#form.save()
-			pregunta = Pregunta.objects.get(pk=pregunta)
 			agregar_respuesta= form.save(commit=False)
 			agregar_respuesta.pregunta=pregunta
 			agregar_respuesta.save() 
@@ -120,7 +174,10 @@ def agregar_respuesta(request, carrera, materia, tematica, quiz, pregunta):
 			# return HttpResponseRedirect('home')
 			return redirect('home')
 	else:
-		form = RespuestaForm()
+		if answer_type == "1":
+			form = OpcionRespuestaCerradaForm()
+		elif answer_type == "2":
+			form = OpcionRespuestaAbiertaForm()
 		if 'submitted' in request.GET:
 			submitted = True
 
@@ -139,7 +196,9 @@ def agregar_quiz(request, carrera, materia, tematica):
 		if request.method == 'POST':
 			form = QuizForm(request.POST)
 			if form.is_valid():
-				form.save()
+				pregunta= form.save(commit=False)
+				pregunta.tematica = Tematica.objects.get(titulo=tematica)
+				pregunta.save()
 				# return HttpResponseRedirect('home')
 				return redirect('home')
 		else:
@@ -219,12 +278,17 @@ def eliminar_material(request, carrera, materia, tematica, id):
 
 def agregar_tematica(request, carrera, materia):
 	if request.user.groups.filter(name="Docentes").exists():
+
 		submitted = False
 		if request.method == 'POST':
+			print(request.POST['tematicaColor1'])
+			print(request.POST['tematicaColor2'])
 			form = TematicaForm(request.POST, request.FILES)
-			print('EL FORMULARIO ES VALIDO' + str(form.is_valid()))
 			if form.is_valid():
-				form.save()
+				tematica = form.save(commit=False)
+				tematica.color1 = request.POST['tematicaColor1']
+				tematica.color2 = request.POST['tematicaColor2']
+				tematica.save()				
 				return HttpResponseRedirect('?submitted=True')
 		else:
 			materia = Materia.objects.get(nombre=materia)
@@ -454,7 +518,10 @@ def carreras_view(request):
 
 def usuario(request):
 	print(request.user.groups.filter(name="Estudiantes").exists())
-	obj = EstudianteProfile.objects.get(user=request.user) 
+	if request.user.groups.filter(name="Estudiantes").exists():
+		obj = EstudianteProfile.objects.get(user=request.user)
+	if request.user.groups.filter(name="Docentes").exists():
+		obj = DocenteProfile.objects.get(user=request.user) 
 	context = {"object": obj,}
 	return render(request, "nombre/ver_perfil.html", context)
 
