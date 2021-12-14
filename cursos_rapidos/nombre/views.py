@@ -139,7 +139,7 @@ def agregar_pregunta(request, carrera, materia, tematica, quiz):
 				pregunta.quiz=quiz
 				pregunta.save()
 				# return HttpResponseRedirect('home')
-				return redirect('home')
+				return redirect('quiz', carrera, materia, tematica, quiz.id)
 		else:
 			form = PreguntaForm()
 			if 'submitted' in request.GET:
@@ -172,7 +172,7 @@ def agregar_respuesta(request, carrera, materia, tematica, quiz, pregunta):
 			agregar_respuesta.save() 
 			print(pregunta)
 			# return HttpResponseRedirect('home')
-			return redirect('home')
+			return redirect('quiz', carrera, materia, tematica, quiz)
 	else:
 		if answer_type == "1":
 			form = OpcionRespuestaCerradaForm()
@@ -200,7 +200,8 @@ def agregar_quiz(request, carrera, materia, tematica):
 				pregunta.tematica = Tematica.objects.get(titulo=tematica)
 				pregunta.save()
 				# return HttpResponseRedirect('home')
-				return redirect('home')
+				return redirect('quiz', carrera, materia, tematica, pregunta.id)
+
 		else:
 			form = QuizForm()
 			if 'submitted' in request.GET:
@@ -224,16 +225,16 @@ def agregar_material(request, carrera, materia, tematica):
 			form = MaterialForm(request.POST, request.FILES)
 			print('EL FORMULARIO ES VALIDO' + str(form.is_valid()))
 			if form.is_valid():
-				tematica = Tematica.objects.get(titulo=tematica)
+				tematica = Tematica.objects.get(pk=tematica)
 				material = form.save(commit=False)
 				material.tematica = tematica# material.video = re.sub(r"(?ism).*?=(.*?)$", r"https://www.youtube.com/embed/\1", material.video)
 				print(material.video)
 				if material.video != None:
+					material.video += "&"
 					material.video = re.split(r"(?ism).*?=(.*?)$", material.video)
 					material.video = material.video[1][0:material.video[1].index('&')]
 				material.save()
-				next = request.POST.get('next', '/')
-				return HttpResponseRedirect(next)
+				return redirect('ver-tematica', carrera, materia, tematica.id)
 				# return redirect('home')
 		else:
 			form = MaterialForm()
@@ -299,6 +300,8 @@ def agregar_tematica(request, carrera, materia):
 		context = {
 			'form': form,
 			'submitted': submitted,
+			'page_title': "Agregar Tematica",
+
 		}
 		return render(request, 'nombre/agregar_tematica.html', context)	
 	else:
@@ -327,17 +330,22 @@ def actualizar_tematica(request, carrera, materia, tematica_id):
 		tematica = Tematica.objects.get(pk=tematica_id)
 		form = TematicaForm(request.POST or None, instance=tematica)
 		if form.is_valid():
-			form.save()
+			tematica = form.save(commit=False)
+			tematica.color1 = request.POST['tematicaColor1']
+			tematica.color2 = request.POST['tematicaColor2']
+			tematica.save()		
 			return redirect('ver-materia', carrera, materia)
+
 
 		context = {
 			'carrera': carrera,
 			'materia': materia,
 			'form': form,
 			'page_title': "Actualizar Tematica",
+
 		}
 
-		return render(request, 'nombre/actualizar_tematica.html', context)
+		return render(request, 'nombre/agregar_tematica.html', context)
 	else:
 		return redirect('login_requerido')
 
@@ -459,10 +467,8 @@ def search_tematica(request):
 	return render(request, 'nombre/search_tematica.html', context)
 
 
-def ver_tematica(request, carrera, materia, titulo):
-	carrera = get_object_or_404(Carrera, nombre=carrera)
-	materia = get_object_or_404(Materia, carrera=carrera, nombre=materia)
-	tematica = get_object_or_404(Tematica, materia=materia, titulo=titulo)
+def ver_tematica(request, carrera, materia, id):
+	tematica = get_object_or_404(Tematica, pk=id)
 	material_list = Material.objects.filter(tematica=tematica)
 	quizes = Quiz.objects.filter(tematica=tematica)
 	form = MaterialForm()
@@ -528,16 +534,9 @@ def usuario(request):
 
 def home(request):
 	cursos = Tematica.objects.filter(is_available=True).order_by('-last_updated')
-	material_list = []
-	for curso in cursos:
-		material = Material.objects.filter(tematica=curso)
-		for mater in material:	
-
-			material_list.append((curso.titulo, mater))
 
 	context = {
 		'cursos': cursos,
-		'material_list': material_list,
 		'page_title': "UGC",
 		}
 	return render(request, 'nombre/home.html', context)

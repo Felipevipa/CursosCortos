@@ -71,7 +71,7 @@ class Tematica(models.Model):
         return '%s - %s' % (self.titulo, self.materia)
 
     def get_absolute_url(self):
-        return reverse("ver-tematica", kwargs={'carrera': self.materia.carrera, 'materia': self.materia.nombre, 'titulo': self.titulo})
+        return reverse("ver-tematica", kwargs={'carrera': self.materia.carrera, 'materia': self.materia.nombre, 'id': self.id})
 
 
 class Enrolamiento(models.Model):

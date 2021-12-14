@@ -7,7 +7,7 @@
     <br><br>
     {% if submitted %}
       Tu Materia fue agregada correctamente
-      <a href="{% url 'carreras-detail' %}" class="btn btn-secondary">Volver</a>
+      <a href="../" class="btn btn-secondary">Volver</a>
     {% else %}
       <form action="" method="POST">
       {% csrf_token %}
