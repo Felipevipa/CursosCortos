@@ -16,12 +16,14 @@
     </style>
   </head>
   <body>
+    
+
   	{% include 'nombre/navbar.html' %}
     {% if user.is_authenticated %}
     {% include 'nombre/sidenavbar.html' %}
     {% endif %}
     {% include 'nombre/auxiliarnav.html' %}
-
+    
 
     <div id="div-body">
     
@@ -68,3 +70,5 @@
     -->
   </body>
 </html>
+
+

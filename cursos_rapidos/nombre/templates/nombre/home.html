@@ -1,11 +1,55 @@
-{% extends 'nombre/base.html' %}
-
-{% block content %}
-
 {% load poll_extras %}
+{% load static %}
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    {% load static %}
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <script type="text/javascript" src="{{ STATIC_URL }} /static/nombre/assets/js/jquery-1.10.2.js">
+    </script> 
+    <title>{{ page_title }}!</title>
+    <style type="text/css">
+      body {background: #f4f4f4;}
+    </style>
+  </head>
+  <body>
+    
+    <div class='image'>
+    {% include 'nombre/navbar.html' %}
+    {% if user.is_authenticated %}
+    {% include 'nombre/sidenavbar.html' %}
+    {% endif %}
+    {% include 'nombre/auxiliarnav.html' %}
 
 
-<h1>Cursos disponibles: </h1>
+    <h1 style="color:white; position:relative; top: 80px; left: 70%; ">Aprendapp</h1>
+    <h2 style="color:white; position:relative; top: 100px; left: 70%; ">Empieza a aprender <br>como tu quieras...</h2>
+    
+    </div>
+
+    <div id="div-body" class="content">
+    
+
+
+    <div class="container" id="main">
+      
+      {% if messages %}
+        {% for message in messages %}
+          
+          <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        {% endfor %}
+      {% endif %}
+      
+      <h1>Cursos disponibles: </h1>
 
 <br><br>
 <div class="row row-cols-1 row-cols-md-2 g-4">
@@ -37,9 +81,66 @@
 </div>
 {% endfor %}
 </div>
+      </div>
+       <br>
 
 
 
-{% endblock %}
+
+      <div class="container shadow p-4 mb-5 bg-body rounded">
+        <iframe id="encoder_iframe" height="350px" width="100%" src="{% url 'preguntar' %}" ></iframe>
+      </div>
+    </div>
+
+
+
+
+    <!-- Optional JavaScript; choose one of the two! -->
+
+    <!-- Option 1: Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+
+    <!-- Option 2: Separate Popper and Bootstrap JS -->
+    <!--
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
+    -->
+  </body>
+</html>
+
+
+
+
+
+
+
+
+<style type="text/css">
+ .image {
+
+      position: absolute;
+
+      width: 100%;
+
+      height: 100%;
+
+      background-image: url("{% static 'blackBackground.jpg' %}");
+
+      background-size: cover;
+
+      background-color: purple;
+
+    }
+  .content {
+
+      position: absolute;
+
+      top: 100%;
+
+      width: 100%;
+
+    }
+</style>
+
 
 

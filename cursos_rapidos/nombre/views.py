@@ -7,7 +7,8 @@ import time
 # from . import version_aplicable
 import os
 from django.views.decorators.clickjacking import xframe_options_exempt
-import re
+# import re
+import requests
 
 
 
@@ -16,11 +17,19 @@ def preguntar(request):
 	if request.method == 'POST':
 		pregunta = request.POST['pregunta']
 		print(pregunta)
-		respuesta = "Respuesta"
+		url = 'http://127.0.0.1:4000/preguntas'
+		apiContext = {'pregunta': pregunta}
 
-		if request.user.groups.filter(name="Estudiantes").exists():
-  			respuesta = "Acceso concedido"
-		# respuesta = version_aplicable.pregunta_respuesta_escrito(pregunta)
+		r = requests.post(url, json = apiContext)
+
+		print(r.status_code)
+
+		if r.status_code == 200:
+			data = r.json()
+			print(type(data))
+			respuesta = data["pregunta"][0]["respuesta"]
+			print(data)
+
 		context = {
 			'pregunta': pregunta,
 			'respuesta': respuesta,
