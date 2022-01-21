@@ -1,23 +1,26 @@
-{% extends 'nombre/base.html' %}
+{% extends 'nombre/base2.html' %}
 
 {% block content %}
-	<div class="shadow p-4 mb-5 bg-body rounded">
-		<h1>Login</h1>
 
-		<form action="" method="POST">
-			{% csrf_token %}
-			  <div class="mb-3">
-			    <label for="exampleInputEmail1" class="form-label">Username</label>
-			    <input type="text" class="form-control" name="username" aria-describedby="emailHelp">
-			  </div>
-			  <div class="mb-3">
-			    <label for="exampleInputPassword1" class="form-label">Password</label>
-			    <input type="password" class="form-control" name="password">
-			  </div>
 
-			<input type="submit" name="" value="Submit" class="btn btn-secondary">
-		</form>
-		<br><br>
-		
-	</div>
+
+<h4 style="color:white; position:relative; top: 120px; width: 30%; left: 70%; text-align: center;">Ingresar</h4>
+
+<form action="" method="POST">
+	{% csrf_token %}
+	  <div class="mb-3" style="color:white; position:relative; top: 140px; width: 30%; left: 70%;">
+	    <input type="text" class="form-control" name="username" aria-describedby="emailHelp" placeholder="Usuario">
+	  </div>
+	  <div class="mb-3" style="color:white; position:relative; top: 140px; width: 30%; left: 70%;">
+	    <input type="password" class="form-control" name="password" placeholder="Contraseña">
+	  </div>
+
+	<input type="submit" name="" value="Ingresar" class="btn btn-success" style="color:white; position:relative; top: 140px; width: 30%; left: 70%;">
+</form>
+<p class="" style="color:white; position:relative; top: 160px; width: 30%; left: 70%;"> ¿No tienes cuenta? <a href="{% url 'registrar-estudiante' %}" class="" style="color:white;"> Registrate</a> es gratis.</p>
+<br><br>
+
+{% include 'nombre/camara.html' %}
+
+
 {% endblock %}

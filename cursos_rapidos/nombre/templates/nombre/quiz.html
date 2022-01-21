@@ -31,7 +31,7 @@
 					{% endif %}
 					{% if request.user|has_group:"Docentes" %}
 					<br>
-				  <a href="{% url 'agregar-respuesta' quiz.tematica.materia.carrera quiz.tematica.materia.nombre quiz.tematica.titulo quiz.id pregunta.id %}" class="btn btn-primary">Agregar respuesta</a><br>
+				  <a href="{% url 'agregar-respuesta' quiz.tematica.materia.carrera quiz.tematica.materia.nombre quiz.tematica.id quiz.id pregunta.id %}" class="btn btn-primary">Agregar respuesta</a><br>
 				  {% endif %}
         <div class="accordion-body"></div>
 	    </div>
@@ -42,7 +42,7 @@
 <input type="submit" value="Enviar">
 </form> 
 {% if request.user|has_group:"Docentes" %}
-<a href="{% url 'agregar-pregunta' quiz.tematica.materia.carrera quiz.tematica.materia.nombre quiz.tematica.titulo quiz.id %}" class="btn btn-success">Agregar Pregunta</a>
+<a href="{% url 'agregar-pregunta' quiz.tematica.materia.carrera quiz.tematica.materia.nombre quiz.tematica.id quiz.id %}" class="btn btn-success">Agregar Pregunta</a>
 {% endif %}
 
 {% endblock %}

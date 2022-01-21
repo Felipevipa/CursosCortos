@@ -5,6 +5,10 @@ from django.contrib.auth.models import User, Group
 from django.contrib.auth.forms import UserCreationForm
 from nombre.models import EstudianteProfile, DocenteProfile
 from .forms import RegistrarUsuarioForm, RegistroEstudiante, RegistroDocente
+import base64
+from PIL import Image
+import numpy as np
+import io
 
 # Create your views here.
 def login_user(request):
@@ -31,6 +35,27 @@ def login_user(request):
 		}
 		return render(request, 'autenticacion/login.html', context)
 
+
+def login_user_camera(request):
+	if request.method == 'POST':
+		username = request.POST['username']
+		photo = request.POST['photo']
+		print(username)
+		print("foto: ")
+		print(type(photo))
+		print(photo)
+		photo = photo[22:len(photo)]
+		base64_decoded = base64.b64decode(photo)
+		image = Image.open(io.BytesIO(base64_decoded))
+		image_np = np.array(image)
+		print(image_np)
+		user = User.objects.get(username=username)
+		login(request, user)
+		if request.user.groups.filter(name="Estudiantes").exists():
+			request.session['foto'] = EstudianteProfile.objects.get(user=user).foto.url
+		if request.user.groups.filter(name="Docentes").exists():
+			request.session['foto'] = DocenteProfile.objects.get(user=user).foto.url
+		return redirect('home')
 
 def logout_user(request):
 	logout(request)

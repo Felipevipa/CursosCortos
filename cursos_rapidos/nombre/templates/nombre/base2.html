@@ -16,17 +16,25 @@
     </style>
   </head>
   <body>
+
+
     
-
-  	{% include 'nombre/navbar.html' %}
-    {% if user.is_authenticated %}
-    {% include 'nombre/sidenavbar.html' %}
-    {% endif %}
-    {% include 'nombre/auxiliarnav.html' %}
-
-
+    
+    
     <div id="div-body">
+    {% load static %}
+    <div class='image'>
+
+
+        {% include 'nombre/navbar.html' %}
+        {% if user.is_authenticated %}
+        {% include 'nombre/sidenavbar.html' %}
+        {% endif %}
+        {% include 'nombre/auxiliarnav.html' %}
+      
     
+     <h1 style="color:white; position:relative; top: 80px; width: 30%; left: 65%;">Aprendapp</h1>
+    <h3 style="color:white; position:relative; top: 80px; width: 30%; left: 65%;">Empieza a aprender como tu quieras...</h3>
 
 
     <div class="container" id="main">
@@ -48,7 +56,7 @@
        <br>
 
 
-
+      </div>
 
       <div class="container shadow p-4 mb-5 bg-body rounded">
         <iframe id="encoder_iframe" height="350px" width="100%" src="{% url 'preguntar' %}" ></iframe>
@@ -70,5 +78,32 @@
     -->
   </body>
 </html>
+
+<style type="text/css">
+     .image {
+
+          position: absolute;
+
+          width: 100%;
+
+          height: 100%;
+
+          background-image: url("{% static 'blackBackground.jpg' %}");
+
+          background-size: cover;
+
+          background-color: purple;
+
+        }
+      .content {
+
+          position: absolute;
+
+          top: 100%;
+
+          width: 100%;
+
+        }
+    </style>
 
 

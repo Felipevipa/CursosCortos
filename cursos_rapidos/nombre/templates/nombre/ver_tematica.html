@@ -35,12 +35,26 @@
   <iframe src="{{ material.materialExterno }}" style="display: hidden; width: 80%; height: 500px" title="description" allowfullscreen></iframe><br>
 {% endif %}
 
+{% if material.quizes %}
+  <div class="card mb-3 border border-success"style="max-width: 540px;"> 
+    <div class="col-sm-6">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">{{ material.quizes.titulo }}</h5>
+          <p class="card-text"></p>
+          <a href="{{ material.quizes.get_absolute_url }}" class="btn btn-primary">Quiz</a>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endif %}
+
 {% load poll_extras %}
 {% if request.user|has_group:"Docentes" %}
 <button type="button" class="mybuttonoverlap btn btn-link dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="font-size : 20px;">+</button>
 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="right: 0; left: auto;">
-    <a class="dropdown-item" href="{% url 'actualizar-material' material.tematica.materia.carrera material.tematica.materia.nombre material.tematica.titulo material.id %}">Actualizar</a>
-    <a class="dropdown-item" href="{% url 'eliminar-material' material.tematica.materia.carrera material.tematica.materia.nombre material.tematica.titulo material.id %}">Eliminar</a>
+    <a class="dropdown-item" href="{% url 'actualizar-material' material.tematica.materia.carrera material.tematica.materia.nombre material.tematica.id material.id %}">Actualizar</a>
+    <a class="dropdown-item" href="{% url 'eliminar-material' material.tematica.materia.carrera material.tematica.materia.nombre material.tematica.id material.id %}">Eliminar</a>
 </div>
 {% endif %}
 </div>
@@ -68,7 +82,7 @@
   <a class="" data-toggle="collapse" href="#collapseImageForm" role="button" aria-expanded="false" aria-controls="collapseImageForm">Agregar Imagen</a>|
   <a class="" data-toggle="collapse" href="#collapseVideoForm" role="button" aria-expanded="false" aria-controls="collapseVideoForm">Agregar Video</a>|
   <a class="" data-toggle="collapse" href="#collapseMEForm" role="button" aria-expanded="false" aria-controls="collapseMEForm">Agregar Material Externo</a>|
-  <a href="{% url 'agregar-quiz' tematica.materia.carrera tematica.materia.nombre tematica.titulo  %}" class="">Agregar Quiz</a>
+  <a href="{% url 'agregar-quiz' tematica.materia.carrera tematica.materia.nombre tematica.id  %}" class="">Agregar Quiz</a>
 
   </div>
   <div>

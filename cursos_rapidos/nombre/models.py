@@ -79,6 +79,14 @@ class Enrolamiento(models.Model):
     tematica            = models.ForeignKey(Tematica, on_delete=models.SET_NULL, null=True)
 
 
+class Quiz(models.Model):
+    titulo      = models.CharField(max_length=80, blank=True)
+    tematica    = models.ForeignKey(Tematica, on_delete=models.SET_NULL, null=True)
+
+    def get_absolute_url(self):
+        return reverse("quiz", kwargs={'carrera': self.tematica.materia.carrera, 'materia': self.tematica.materia.nombre, 'tematica': self.tematica.id, 'id': self.id,})
+
+
 class Material(models.Model):
     titulo             = models.CharField(max_length=80, blank=True)
     contenido_de_texto = models.TextField(null=True, blank=True)
@@ -86,14 +94,10 @@ class Material(models.Model):
     video              = models.URLField(null=True, blank=True)
     materialExterno    = models.URLField(null=True, blank=True)
     tematica           = models.ForeignKey(Tematica, on_delete=models.SET_NULL, null=True)
+    quizes             = models.ForeignKey(Quiz, on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
         return 'tematica asociada: %s' % self.tematica
-
-
-class Quiz(models.Model):
-    titulo      = models.CharField(max_length=80, blank=True)
-    tematica    = models.ForeignKey(Tematica, on_delete=models.SET_NULL, null=True)
 
 
     def __str__(self):

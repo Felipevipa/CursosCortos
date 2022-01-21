@@ -114,7 +114,7 @@ def quiz(request, carrera, materia, tematica, id):
 
 
 
-	if quiz.tematica.titulo  == tematica and  quiz.tematica.materia.nombre == materia and quiz.tematica.materia.carrera.nombre == carrera:
+	if str(quiz.tematica.id)  == tematica and  quiz.tematica.materia.nombre == materia and quiz.tematica.materia.carrera.nombre == carrera:
 		preguntas = Pregunta.objects.filter(quiz=quiz)
 		opcionesRespuesta = []
 		for pregunta in preguntas:
@@ -205,11 +205,18 @@ def agregar_quiz(request, carrera, materia, tematica):
 		if request.method == 'POST':
 			form = QuizForm(request.POST)
 			if form.is_valid():
-				pregunta= form.save(commit=False)
-				pregunta.tematica = Tematica.objects.get(titulo=tematica)
-				pregunta.save()
+				tematica = Tematica.objects.get(pk=tematica)
+				quiz = form.save(commit=False)
+				quiz.tematica = tematica
+				quiz.save()
+				material = Material.objects.create()
+				material.tematica = tematica
+				material.quizes = quiz
+
+				material.save()
+				print(quiz.id)
 				# return HttpResponseRedirect('home')
-				return redirect('quiz', carrera, materia, tematica, pregunta.id)
+				return redirect('quiz', carrera, materia, tematica.id, quiz.id)
 
 		else:
 			form = QuizForm()
@@ -546,7 +553,7 @@ def home(request):
 
 	context = {
 		'cursos': cursos,
-		'page_title': "UGC",
+		'page_title': "Aprendapp",
 		}
 	return render(request, 'nombre/home.html', context)
 

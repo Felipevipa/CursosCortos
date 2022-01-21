@@ -11,12 +11,15 @@
         <li class="nav-item">
           <a class="nav-link" href="{% url 'carreras-detail' %}">Carreras</a>
         </li>
+        {% block additionalNavItems %}
+
+        {% endblock %}
         
       </ul>
 
       <form class="d-flex" method="POST", action="{% url 'search-tematica' %}"> {% csrf_token %}
-        <input class="form-control me-2" type="search" placeholder="Search Courses" aria-label="Search" name="searched">
-        <button class="btn btn-outline-secondary" type="submit">Search</button>
+        <input class="form-control me-2" type="search" placeholder="Buscar Cursos" aria-label="Search" name="searched">
+        <button class="btn btn-outline-success" style="color: white;" type="submit">Buscar</button>
       </form>
       
           <li class="nav-item dropdown navbar-nav navbar-right">
@@ -42,15 +45,13 @@
             </li>
           {% endif %}
           <li>
-            <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
+            <a class="dropdown-item" href="{% url 'logout' %}">Cerrar sesion</a>
           </li>
           {% else %}
            <li>
-              <a class="dropdown-item" href="{% url 'login' %}">Login</a>
+              <a class="dropdown-item" href="{% url 'login' %}">Ingresar</a>
             </li>
-            <li>
-              <a class="dropdown-item" href="{% url 'register-user' %}">Registro</a>
-            </li>
+            
             <li>
               <a class="dropdown-item" href="{% url 'registrar-estudiante' %}">Registro estudiante</a>
             </li>

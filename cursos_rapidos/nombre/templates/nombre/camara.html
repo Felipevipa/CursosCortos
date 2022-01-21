@@ -1,0 +1,18 @@
+{% load static %}
+
+<button id="start-camera">Start Camera</button>
+<video id="video" width="320" height="240" autoplay></video>
+<button id="click-photo">Click Photo</button>
+<canvas id="canvas" width="320" height="240"></canvas>
+
+
+<form method="POST" action="{% url 'loginCamera' %}" name="inputForm" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="text" name="username">
+    <input id="myFileInput" type="hidden" name="photo">
+    <input type="submit" name="">
+</form>
+
+
+
+<script type="text/javascript" src="{% static 'js/nombre/camara.js' %}"></script>
