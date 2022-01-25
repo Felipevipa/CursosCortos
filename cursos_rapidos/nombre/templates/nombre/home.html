@@ -27,6 +27,18 @@
     {% endif %}
     {% include 'nombre/auxiliarnav.html' %}
 
+    <div style="position: fixed; width: 100%; top: 15%">
+    {% if messages %}
+      {% for message in messages %}
+        
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      {% endfor %}
+    {% endif %}
+    </div>
+
 
     <h1 style="color:white; position:relative; top: 80px; width: 30%; left: 70%;">Aprendapp</h1>
     <h2 style="color:white; position:relative; top: 120px; width: 30%; left: 70%;">Empieza a aprender como tu quieras...</h2>
@@ -48,15 +60,6 @@
 
     <div class="container" id="cursos">
       
-      {% if messages %}
-        {% for message in messages %}
-          
-          <div class="alert alert-warning alert-dismissible fade show" role="alert">
-            {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-          </div>
-        {% endfor %}
-      {% endif %}
       
       <h1>Cursos disponibles: </h1>
 

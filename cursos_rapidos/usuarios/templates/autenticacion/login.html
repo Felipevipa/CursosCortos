@@ -1,4 +1,5 @@
 {% extends 'nombre/base2.html' %}
+{% load static %}
 
 {% block content %}
 
@@ -6,6 +7,8 @@
 
 <h4 style="color:white; position:relative; top: 120px; width: 30%; left: 70%; text-align: center;">Ingresar</h4>
 
+
+<div id="loginWithPasswordDiv">
 <form action="" method="POST">
 	{% csrf_token %}
 	  <div class="mb-3" style="color:white; position:relative; top: 140px; width: 30%; left: 70%;">
@@ -19,8 +22,19 @@
 </form>
 <p class="" style="color:white; position:relative; top: 160px; width: 30%; left: 70%;"> ¿No tienes cuenta? <a href="{% url 'registrar-estudiante' %}" class="" style="color:white;"> Registrate</a> es gratis.</p>
 <br><br>
+<input class="btn btn-outline-secondary" type="button" name="loginWithCamera" value="Ingresa con tu rostro :)" style="color:white; position:relative; top: 120px; width: 30%; left: 70%;">
+</div>
 
+<div id="loginWithCameraDiv" style="display:none">
 {% include 'nombre/camara.html' %}
+<input class="btn btn-outline-secondary" type="button" name="loginWithPassword" value="Ingresar con contraseña ********" style="color:white; position:relative; top: 140px; width: 30%; left: 70%;">
+</div>
 
+
+
+
+<div id="dynamicContent"></div>
+
+<script type="text/javascript" src="{% static 'js/autenticacion/changeContentDynamically.js' %}"></script>
 
 {% endblock %}

@@ -36,18 +36,21 @@
      <h1 style="color:white; position:relative; top: 80px; width: 30%; left: 65%;">Aprendapp</h1>
     <h3 style="color:white; position:relative; top: 80px; width: 30%; left: 65%;">Empieza a aprender como tu quieras...</h3>
 
+    <div style="position: fixed; width: 100%; top: 15%">
+    {% if messages %}
+      {% for message in messages %}
+        
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      {% endfor %}
+    {% endif %}
+    </div>
 
     <div class="container" id="main">
       
-      {% if messages %}
-        {% for message in messages %}
-          
-          <div class="alert alert-warning alert-dismissible fade show" role="alert">
-            {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-          </div>
-        {% endfor %}
-      {% endif %}
+      
       
       {% block content %}
 

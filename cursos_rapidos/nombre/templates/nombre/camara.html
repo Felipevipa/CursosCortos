@@ -1,18 +1,27 @@
 {% load static %}
 
-<button id="start-camera">Start Camera</button>
-<video id="video" width="320" height="240" autoplay></video>
-<button id="click-photo">Click Photo</button>
-<canvas id="canvas" width="320" height="240"></canvas>
+
+<div class="mb-3" style="color:white; position:relative; top: 140px; width: 30%; left: 70%; display: grid;">
+
+
 
 
 <form method="POST" action="{% url 'loginCamera' %}" name="inputForm" enctype="multipart/form-data">
     {% csrf_token %}
-    <input type="text" name="username">
+    <input type="text" class="form-control" name="username" aria-describedby="emailHelp" placeholder="Usuario" required>
+    <video id="video" width="160" height="120" autoplay></video> <br>
+    
+    <canvas id="canvas" width="160" height="120" style="display:none;"></canvas>
     <input id="myFileInput" type="hidden" name="photo">
-    <input type="submit" name="">
+    <button id="start-camera" type="button" class="btn btn-secondary">Iniciar Camara</button>
+    <button id="click-photo" type="button" class="btn btn-secondary">Tomar foto</button>
+    <input type="submit" name="" class="btn btn-secondary">
 </form>
 
+</div>
 
 
 <script type="text/javascript" src="{% static 'js/nombre/camara.js' %}"></script>
+<script type="text/javascript">
+    //startCamera()
+</script>

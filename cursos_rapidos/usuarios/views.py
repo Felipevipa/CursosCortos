@@ -9,6 +9,11 @@ import base64
 from PIL import Image
 import numpy as np
 import io
+import requests
+import os
+from io import BytesIO
+
+
 
 # Create your views here.
 def login_user(request):
@@ -40,22 +45,51 @@ def login_user_camera(request):
 	if request.method == 'POST':
 		username = request.POST['username']
 		photo = request.POST['photo']
-		print(username)
-		print("foto: ")
-		print(type(photo))
-		print(photo)
-		photo = photo[22:len(photo)]
-		base64_decoded = base64.b64decode(photo)
-		image = Image.open(io.BytesIO(base64_decoded))
-		image_np = np.array(image)
-		print(image_np)
+		# print(username)
+		# print("foto: ")
+		# print(type(photo))
+		# print(photo)
+		foto2 = photo[22:len(photo)]
+
+
 		user = User.objects.get(username=username)
-		login(request, user)
-		if request.user.groups.filter(name="Estudiantes").exists():
-			request.session['foto'] = EstudianteProfile.objects.get(user=user).foto.url
-		if request.user.groups.filter(name="Docentes").exists():
-			request.session['foto'] = DocenteProfile.objects.get(user=user).foto.url
-		return redirect('home')
+		if user.groups.filter(name="Estudiantes").exists():
+			foto1 = EstudianteProfile.objects.get(user=user).foto.url
+		if user.groups.filter(name="Docentes").exists():
+			foto1 = DocenteProfile.objects.get(user=user).foto.url
+
+		# foto1 = Image.open(R"media\static\images\estudiantes\yeisonfoto.jpg")
+		foto1 = Image.open(foto1[1:])
+
+		output_buffer = BytesIO()
+		foto1.save(output_buffer, format='JPEG')
+		byte_data = output_buffer.getvalue()
+		foto1 = base64.b64encode(byte_data)
+		foto1 = foto1.decode("utf-8")
+
+		url = 'http://127.0.0.1:6000/reconocimiento'
+		apiContext = {'foto1': foto1,
+					  'foto2': foto2}
+
+		r = requests.post(url, json = apiContext)
+
+		print(r.status_code)
+
+		if r.status_code == 200:
+			data = r.json()
+			print(data)
+
+			if data["identificacion"] == 1:
+				login(request, user)
+				if request.user.groups.filter(name="Estudiantes").exists():
+					request.session['foto'] = EstudianteProfile.objects.get(user=user).foto.url
+				if request.user.groups.filter(name="Docentes").exists():
+					request.session['foto'] = DocenteProfile.objects.get(user=user).foto.url
+				return redirect('home')
+				
+		messages.success(request, ("No fue posible ingresar, intente nuevamente..."))
+		return redirect('login')
+
 
 def logout_user(request):
 	logout(request)
