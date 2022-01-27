@@ -1,0 +1,43 @@
+{% load static %}
+<div id="generalContainerChat">
+	<div id="chatWindow" style="display:none;" class="container shadow p-4 bg-body rounded">
+		<iframe id="encoder_iframe" height="350px" width="100%" src="{% url 'preguntar' %}" ></iframe>
+	</div>
+
+	<div id="icon">
+		<a href="#" onclick="toggle()">
+		<img src="{% static 'iconoChat.png' %}" width="40" height="40">
+		</a>
+	</div>
+</div>
+
+<style type="text/css">
+
+#generalContainerChat {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
+	position: fixed;
+	bottom: 2%;
+	right: 2%;
+	border: 3px solid transparent;
+	background-color: transparent;
+	color: white;
+	
+}
+
+#icon {
+	border-radius: 50%;
+	border: 3px solid white;
+	background-color: white;
+	color: white;
+}
+
+#chatWindow {
+	display: none;
+	margin-bottom: 10px;
+}
+
+</style>
+
+<script type="text/javascript" src="{% static 'js/nombre/toggleChat.js' %}"></script>

@@ -96,6 +96,24 @@ def quiz(request, carrera, materia, tematica, id):
 				respuestaAbierta.save()
 				print(respuestaEstudiante)
 
+				# Procesando respuesta en api para recibir nota
+				url = 'http://127.0.0.1:4001/calificarpreguntaabierta'
+				apiContext = {
+							    "pregunta": pregunta.enunciado,
+							    "respuesta": respuestaEstudiante
+							 }
+
+				r = requests.post(url, json = apiContext)
+
+				print(r.status_code)
+
+				if r.status_code == 200:
+					data = r.json()
+					print(type(data))
+					respuesta = data["calificacion"]
+					print(data)
+					acum += respuesta/5
+
 
 		nota = acum * (50/len(preguntas))
 		current_time = datetime.now().strftime("%H:%M:%S")
