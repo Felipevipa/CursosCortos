@@ -11,7 +11,7 @@ from django.dispatch import receiver
 
 
 
-class Carrera(models.Model):
+class Categoria(models.Model):
     nombre      = models.CharField(max_length=50)
 
     def __str__(self):
@@ -21,70 +21,60 @@ class Carrera(models.Model):
         return reverse("ver-carrera", kwargs={'nombre': self.nombre})  # f"/products/{self.id}/"
 
 
-class EstudianteProfile(models.Model):
+class UserProfile(models.Model):
     foto        = models.ImageField(null=True, upload_to='static/images/estudiantes/')
-    codigo      = models.BigIntegerField()
     documento   = models.BigIntegerField()
     fechadenacimiento = models.DateField()
     user        = models.OneToOneField(User, on_delete=models.CASCADE, blank=True, null=True)
-    carrera     = models.ForeignKey(Carrera, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
-        return '%s %s' % (self.codigo, self.user.first_name)
-
-
-class DocenteProfile(models.Model):
-    foto              = models.ImageField(null=True, upload_to='static/images/docentes/')
-    documento         = models.BigIntegerField()
-    fechadenacimiento = models.DateField()
-    carrera           = models.ForeignKey(Carrera, on_delete=models.SET_NULL, blank=True, null=True)
-    user              = models.OneToOneField(User, on_delete=models.CASCADE, blank=True, null=True)
-
-
-
-class Materia(models.Model):
-    nombre = models.CharField(max_length=40)
-    carrera = models.ForeignKey(Carrera, on_delete=models.SET_NULL, null=True)
-
-    def __str__(self):
-        return '%s - %s' % (self.nombre, self.carrera)
-
-    def get_absolute_url(self):
-        return reverse("ver-materia", kwargs={'carrera': self.carrera, 'nombre': self.nombre})  # f"/products/{self.id}/"
-
-
+        return '%s %s' % (self.user.first_name, self.user.last_name)
 
 
 class Tematica(models.Model):
+    nombre = models.CharField(max_length=40)
+    categoria = models.ForeignKey(Categoria, on_delete=models.SET_NULL, null=True)
+
+    def __str__(self):
+        return '%s - %s' % (self.nombre, self.categoria)
+
+    def get_absolute_url(self):
+        return reverse("ver-materia", kwargs={'carrera': self.categoria, 'nombre': self.nombre})  # f"/products/{self.id}/"
+
+
+
+
+class Curso(models.Model):
     id           = models.BigAutoField(primary_key=True, serialize=False)
     imagen       = models.ImageField(null=True, upload_to='static/images/tematicas/',)
     titulo       = models.CharField(max_length=80)
     resumen      = models.CharField(max_length=300,)
-    materia      = models.ForeignKey(Materia, on_delete=models.SET_NULL, null=True, blank=True)
-    docente      = models.ForeignKey(DocenteProfile, on_delete=models.SET_NULL, null=True, blank=True)
+    tematica     = models.ForeignKey(Tematica, on_delete=models.SET_NULL, null=True, blank=True)
     is_available = models.BooleanField(default=False)
     last_updated = models.DateTimeField(auto_now=True)
     color1       = models.CharField(max_length=9)
     color2       = models.CharField(max_length=9)
 
     def __str__(self):
-        return '%s - %s' % (self.titulo, self.materia)
+        return '%s - %s' % (self.titulo, self.tematica)
 
     def get_absolute_url(self):
-        return reverse("ver-tematica", kwargs={'carrera': self.materia.carrera, 'materia': self.materia.nombre, 'id': self.id})
+        return reverse("ver-tematica", kwargs={'carrera': self.tematica.categoria, 'materia': self.tematica.nombre, 'id': self.id})
 
 
 class Enrolamiento(models.Model):
-    estudianteProfile   = models.ForeignKey(EstudianteProfile, on_delete=models.SET_NULL, null=True)
-    tematica            = models.ForeignKey(Tematica, on_delete=models.SET_NULL, null=True)
+    userProfile   = models.ForeignKey(UserProfile, on_delete=models.SET_NULL, null=True)
+    curso         = models.ForeignKey(Curso, on_delete=models.SET_NULL, null=True)
+    isCreator     = models.BooleanField(default=False)
+    isEnroled     = models.BooleanField(default=False)
 
 
 class Quiz(models.Model):
     titulo      = models.CharField(max_length=80, blank=True)
-    tematica    = models.ForeignKey(Tematica, on_delete=models.SET_NULL, null=True)
+    curso       = models.ForeignKey(Curso, on_delete=models.SET_NULL, null=True)
 
     def get_absolute_url(self):
-        return reverse("quiz", kwargs={'carrera': self.tematica.materia.carrera, 'materia': self.tematica.materia.nombre, 'tematica': self.tematica.id, 'id': self.id,})
+        return reverse("quiz", kwargs={'carrera': self.curso.tematica.categoria, 'materia': self.curso.tematica.nombre, 'tematica': self.curso.id, 'id': self.id,})
 
 
 class Material(models.Model):
@@ -93,15 +83,15 @@ class Material(models.Model):
     imagen             = models.ImageField(null=True, blank=True, upload_to='static/images/material/')
     video              = models.URLField(null=True, blank=True)
     materialExterno    = models.URLField(null=True, blank=True)
-    tematica           = models.ForeignKey(Tematica, on_delete=models.SET_NULL, null=True)
+    curso              = models.ForeignKey(Curso, on_delete=models.SET_NULL, null=True, blank=True)
     quizes             = models.ForeignKey(Quiz, on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
-        return 'tematica asociada: %s' % self.tematica
+        return 'tematica asociada: %s' % self.curso
 
 
     def __str__(self):
-        return '%s - %s' % (self.id, self.tematica)
+        return '%s - %s' % (self.id, self.curso)
 
     def get_absolute_url(self):
         return reverse("quiz", kwargs={'carrera': self.tematica.materia.carrera, 'materia': self.tematica.materia.nombre, 'tematica': self.tematica.titulo, 'id': self.id,})
@@ -112,7 +102,7 @@ class Calificacion(models.Model):
     tiempo      = models.TimeField()
     nota        = models.DecimalField(max_digits=4, decimal_places=2)
     quiz        = models.ForeignKey(Quiz, on_delete=models.SET_NULL, null=True)
-    estudiante  = models.ForeignKey(EstudianteProfile, on_delete=models.SET_NULL, null=True)
+    userProfile = models.ForeignKey(UserProfile, on_delete=models.SET_NULL, null=True)
 
 
 class Pregunta(models.Model):
@@ -132,7 +122,7 @@ class OpcionRespuestaAbierta(models.Model):
     pregunta            = models.ForeignKey(Pregunta, on_delete=models.SET_NULL, null=True)
 
 
-class RespuestaEstudianteAbierta(models.Model):
-    respuesta           = models.TextField(null=True, blank=True)
-    pregunta            = models.ForeignKey(Pregunta, on_delete=models.SET_NULL, null=True)
-    estudianteProfile   = models.ForeignKey(EstudianteProfile, on_delete=models.SET_NULL, null=True)
+class RespuestaUsuarioAbierta(models.Model):
+    respuesta   = models.TextField(null=True, blank=True)
+    pregunta    = models.ForeignKey(Pregunta, on_delete=models.SET_NULL, null=True)
+    userProfile = models.ForeignKey(UserProfile, on_delete=models.SET_NULL, null=True)

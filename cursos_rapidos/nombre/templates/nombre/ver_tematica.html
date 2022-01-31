@@ -24,7 +24,7 @@
 {% endif %}
 
 {% if material.imagen %}
-  <img src="{{ material.imagen.url }}" class="user-image img-responsive"/> <br>
+  <img src="{{ material.imagen.url }}" class="user-image img-responsive"/ width="100%"> <br>
 {% endif %}
 
 {% if material.video %}
@@ -53,8 +53,8 @@
 {% if request.user|has_group:"Docentes" %}
 <button type="button" class="mybuttonoverlap btn btn-link dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="font-size : 20px;">+</button>
 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="right: 0; left: auto;">
-    <a class="dropdown-item" href="{% url 'actualizar-material' material.tematica.materia.carrera material.tematica.materia.nombre material.tematica.id material.id %}">Actualizar</a>
-    <a class="dropdown-item" href="{% url 'eliminar-material' material.tematica.materia.carrera material.tematica.materia.nombre material.tematica.id material.id %}">Eliminar</a>
+    <a class="dropdown-item" href="{% url 'actualizar-material' material.curso.tematica.categoria material.curso.tematica.nombre material.curso.id material.id %}">Actualizar</a>
+    <a class="dropdown-item" href="{% url 'eliminar-material' material.curso.tematica.categoria material.curso.tematica.nombre material.curso.id material.id %}">Eliminar</a>
 </div>
 {% endif %}
 </div>
@@ -82,7 +82,7 @@
   <a class="" data-toggle="collapse" href="#collapseImageForm" role="button" aria-expanded="false" aria-controls="collapseImageForm">Agregar Imagen</a>|
   <a class="" data-toggle="collapse" href="#collapseVideoForm" role="button" aria-expanded="false" aria-controls="collapseVideoForm">Agregar Video</a>|
   <a class="" data-toggle="collapse" href="#collapseMEForm" role="button" aria-expanded="false" aria-controls="collapseMEForm">Agregar Material Externo</a>|
-  <a href="{% url 'agregar-quiz' tematica.materia.carrera tematica.materia.nombre tematica.id  %}" class="">Agregar Quiz</a>
+  <a href="{% url 'agregar-quiz' tematica.tematica.categoria tematica.tematica.nombre tematica.id  %}" class="">Agregar Quiz</a>
 
   </div>
   <div>
@@ -181,7 +181,7 @@
 </div>
 
 {% if request.user|has_group:"Docentes" %}
-<a href="{% url 'agregar-material' tematica.materia.carrera tematica.materia tematica.titulo %}" class="btn btn-secondary d-inline">Agregar Material</a>
+<a href="{% url 'agregar-material' tematica.tematica.categoria tematica.tematica tematica.titulo %}" class="btn btn-secondary d-inline">Agregar Material</a>
 {% endif %}
 
 

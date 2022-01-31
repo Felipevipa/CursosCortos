@@ -3,8 +3,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.models import User, Group
 from django.contrib.auth.forms import UserCreationForm
-from nombre.models import EstudianteProfile, DocenteProfile
-from .forms import RegistrarUsuarioForm, RegistroEstudiante, RegistroDocente
+from nombre.models import UserProfile
+from .forms import *
 import base64
 from PIL import Image
 import numpy as np
@@ -24,7 +24,7 @@ def login_user(request):
 		if user is not None:
 			login(request, user)
 			if request.user.groups.filter(name="Estudiantes").exists():
-				request.session['foto'] = EstudianteProfile.objects.get(user=user).foto.url
+				request.session['foto'] = UserProfile.objects.get(user=user).foto.url
 			if request.user.groups.filter(name="Docentes").exists():
 				request.session['foto'] = DocenteProfile.objects.get(user=user).foto.url
 			return redirect('home')
@@ -120,7 +120,7 @@ def register_user(request):
 def registrar_estudiante(request):
 	if request.method == 'POST':
 		form_user = RegistrarUsuarioForm(request.POST)
-		form_profile = RegistroEstudiante(request.POST, request.FILES)
+		form_profile = UserRegisterForm(request.POST, request.FILES)
 		if form_profile.is_valid() and form_user.is_valid():
 
 			user = form_user.save()
@@ -138,7 +138,7 @@ def registrar_estudiante(request):
 			messages.success(request, ('Registro completo'))
 			return redirect('home')
 	else:
-		form_profile = RegistroEstudiante()
+		form_profile = UserRegisterForm()
 		form_user = RegistrarUsuarioForm()
 
 	context = {

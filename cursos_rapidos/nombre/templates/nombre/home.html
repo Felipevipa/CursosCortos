@@ -77,14 +77,14 @@
     <div class="col-md-8">
       <div class="card-body">
         <h5 class="card-title">{{ curso.titulo }}</h5>
-        <h6 class="card-title">{{ curso.materia.nombre }} - {{ curso.materia.carrera.nombre }}</h6>
+        <h6 class="card-title">{{ curso.tematica.nombre }} - {{ curso.tematica.categoria.nombre }}</h6>
         <p class="card-text" style="overflow: hidden; height: 150px;">
           {{ curso.resumen }}
         </p>
         <p class="card-text">
           
           {% if request.user|has_group:"Docentes" %}
-          <a href="{% url 'actualizar-tematica' curso.materia.carrera.nombre curso.materia.nombre curso.id %}" class="btn btn-outline-secondary">Actualizar</a>
+          <a href="{% url 'actualizar-tematica' curso.tematica.categoria.nombre curso.tematica.nombre curso.id %}" class="btn btn-outline-secondary">Actualizar</a>
           {% endif %}
           <a href="{{ curso.get_absolute_url }}" class="btn btn-outline-success"> Entrar</a></p>
         <p class="card-text"><small class="text-muted">Ultima Actualización: {{ curso.last_updated }}</small></p>
@@ -159,7 +159,7 @@
 
       position: absolute;
 
-      top: 200%;
+      top: 205%;
 
       width: 100%;
 

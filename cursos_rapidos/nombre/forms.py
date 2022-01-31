@@ -10,9 +10,9 @@ class CalificacionForm(forms.ModelForm):
 		fields = '__all__'
 
 
-class RespuestaEstudianteAbiertaForm(forms.ModelForm):
+class RespuestaUsuarioAbiertaForm(forms.ModelForm):
 	class Meta:
-		model = RespuestaEstudianteAbierta
+		model = RespuestaUsuarioAbierta
 		exclude = ['pregunta']
 
 
@@ -64,7 +64,7 @@ class PreguntaForm(forms.ModelForm):
 class QuizForm(forms.ModelForm):
 	class Meta:
 		model = Quiz
-		exclude = ['tematica']
+		exclude = ['curso']
 		labels = {
 			'titulo': '',
 		}
@@ -76,7 +76,7 @@ class QuizForm(forms.ModelForm):
 class MaterialForm(forms.ModelForm):
 	class Meta:
 		model = Material
-		exclude = ['tematica']
+		exclude = ['curso', 'quizes']
 		labels = {
 			'titulo': '',
 			'contenido_de_texto': '',
@@ -93,32 +93,30 @@ class MaterialForm(forms.ModelForm):
 		}
 
 
-class TematicaForm(forms.ModelForm):
+class CursoForm(forms.ModelForm):
 	class Meta:
-		model = Tematica
+		model = Curso
 		exclude = ['color1', 'color2']
 		labels = {
 			'imagen': 'Portada',
 			'titulo': '',
 			'resumen': '',
-			'materia': 'Materia:',
-			'docente':'Docente:',
+			'tematica': 'Materia:',
 			'is_available': 'Disponible',
 		}
 		widgets = {
 			'imagen': forms.FileInput(attrs = {'class': 'form-control',}),
 			'titulo': forms.TextInput(attrs={'class':'form-control', 'placeholder':'Titulo de la Tematica'}),
 			'resumen': forms.Textarea(attrs={'class':'form-control', 'placeholder':'Resumen de la Tematica','rows':3,}),
-			'materia': forms.Select(attrs={'class':'form-select', 'readonly': True,}),
-			'docente': forms.Select(attrs={'class':'form-select',}),
+			'tematica': forms.Select(attrs={'class':'form-select', 'readonly': True,}),
 			# 'is_available': forms.NullBooleanField(attrs={'class':'form-select',}),
 		}
 
 
 
-class MateriaForm(forms.ModelForm):
+class TematicaForm(forms.ModelForm):
 	class Meta:
-		model = Materia
+		model = Tematica
 		fields = '__all__'
 		labels = {
 			'nombre': '',
@@ -130,9 +128,9 @@ class MateriaForm(forms.ModelForm):
 		}
 
 
-class CarreraForm(forms.ModelForm):
+class CategoriaForm(forms.ModelForm):
 	class Meta:
-		model = Carrera
+		model = Categoria
 		fields = '__all__'
 		labels = {
 			'nombre': '',
@@ -231,7 +229,7 @@ class RawStudentForm(forms.ModelForm):
 		}
 	))
 
-	carrera = forms.ModelChoiceField(queryset = Carrera.objects.all(), widget=forms.Select(
+	categoria = forms.ModelChoiceField(queryset = Categoria.objects.all(), widget=forms.Select(
 		attrs = {
 			'class': 'form-control',
 		}
@@ -239,5 +237,5 @@ class RawStudentForm(forms.ModelForm):
 	
 
 	class Meta:
-		model = EstudianteProfile
+		model = UserProfile
 		fields = '__all__'

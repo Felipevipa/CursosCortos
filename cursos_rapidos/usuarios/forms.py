@@ -1,30 +1,30 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from nombre.models import EstudianteProfile, DocenteProfile
+from nombre.models import UserProfile
 
 
-class RegistroDocente(forms.ModelForm):
+# class RegistroDocente(forms.ModelForm):
+# 	class Meta:
+# 		model = DocenteProfile
+# 		exclude = ['user']
+
+# 		labels = {
+# 			'foto': 'Foto de Perfil',
+# 			'documento': '',
+# 			'fechadenacimiento': 'Fecha De Nacimiento:',
+# 		}
+# 		widgets = {
+# 			'foto': forms.FileInput(attrs = {'class': 'form-control',}),
+# 			'documento': forms.TextInput(attrs={'class':'form-control', 'placeholder':'Documento'}),
+# 			'fechadenacimiento': forms.DateInput(attrs = {'class': 'form-control', 'placeholder': 'Fecha de Nacimiento', 'type': 'date',}),
+# 		}
+
+
+
+class UserRegisterForm(forms.ModelForm):
 	class Meta:
-		model = DocenteProfile
-		exclude = ['user']
-
-		labels = {
-			'foto': 'Foto de Perfil',
-			'documento': '',
-			'fechadenacimiento': 'Fecha De Nacimiento:',
-		}
-		widgets = {
-			'foto': forms.FileInput(attrs = {'class': 'form-control',}),
-			'documento': forms.TextInput(attrs={'class':'form-control', 'placeholder':'Documento'}),
-			'fechadenacimiento': forms.DateInput(attrs = {'class': 'form-control', 'placeholder': 'Fecha de Nacimiento', 'type': 'date',}),
-		}
-
-
-
-class RegistroEstudiante(forms.ModelForm):
-	class Meta:
-		model = EstudianteProfile
+		model = UserProfile
 		exclude = ['user']
 
 		labels = {
