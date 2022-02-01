@@ -1,33 +1,8 @@
 {% extends 'nombre/base.html' %}
 
 {% block content %}
-<div class="shadow p-4 mb-5 bg-body rounded">
-<table class="table">
-  <tr>  
-    <td><h1>Categorias</h1> </td> 
-    {% if user.is_authenticated %}
-    {% load poll_extras %}
-    {% if request.user|has_group:"Docentes" %}
-    <td align="center" class="col-2"><a href="{% url 'agregar-carrera' %}" class="btn btn-secondary">Agregar Categoria</a>
-    </td>
-    {% endif %}
-    {% endif %}
-  </tr>
-  {% for categoria in categorias_list %}
-  <tr>  
-    <td><a href="{{ categoria.get_absolute_url }}" class="list-group-item list-group-item-action">{{ categoria }}</a></td> 
-    {% if user.is_authenticated %}
-    {% load poll_extras %}
-    {% if request.user|has_group:"Docentes" %}
-    <td align="center"><a href="{% url 'actualizar-carrera' categoria.id %}" class="btn btn-outline-secondary btn-sm">Actualizar</a>
-      <a href="{% url 'eliminar-carrera' categoria.id %}" class="btn btn-outline-danger btn-sm">Eliminar</a>
-    </td>
-    {% endif %}
-    {% endif %}
-  </tr>
-  {% endfor %}
-</table>
-</div>
+
+{% include 'nombre/categoriasOnly.html' %}
 
 
 {% endblock %}

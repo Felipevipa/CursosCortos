@@ -12,6 +12,7 @@ from django.dispatch import receiver
 
 
 class Categoria(models.Model):
+    imagen      = models.ImageField(null=True, upload_to='static/images/categorias/')
     nombre      = models.CharField(max_length=50)
 
     def __str__(self):
@@ -59,7 +60,7 @@ class Curso(models.Model):
         return '%s - %s' % (self.titulo, self.tematica)
 
     def get_absolute_url(self):
-        return reverse("ver-tematica", kwargs={'carrera': self.tematica.categoria, 'materia': self.tematica.nombre, 'id': self.id})
+        return reverse("ver-tematica", kwargs={'carrera': self.tematica.categoria.nombre, 'materia': self.tematica.nombre, 'id': self.id})
 
 
 class Enrolamiento(models.Model):

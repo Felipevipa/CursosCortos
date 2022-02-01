@@ -1,0 +1,34 @@
+
+
+{% load poll_extras %}
+<h2 style="color: white;">Categorias:</h2>
+{% if user.is_authenticated %}
+  {% if request.user|has_group:"Docentes" %}
+    <td align="center" class="col-2"><a href="{% url 'agregar-carrera' %}" class="btn btn-secondary">Agregar Categoria</a>
+    </td>
+  {% endif %}
+{% endif %}
+
+<div id="categoriasContainer">
+  {% for categoria in categorias_list %}
+  <div class="cardInternal">
+    <div class="cardInternalImage">
+      <img src="{{ categoria.imagen.url }}" class="squareThumbnail">
+    </div>
+    <div class="cardInternalContent">
+      <h3>{{ categoria.nombre }}</h3>
+      <div style="display: flex;">
+        <a href="{{ categoria.get_absolute_url }}" class="btn btn-outline-success">Entrar</a>
+        {% if request.user|has_group:"Docentes" %}
+        <a href="{% url 'actualizar-carrera' categoria.id %}" class="btn btn-outline-secondary btn-sm">Actualizar</a>
+        <a href="{% url 'eliminar-carrera' categoria.id %}" class="btn btn-outline-danger btn-sm">Eliminar</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+
+
+<link rel="stylesheet" href="{{ STATIC_URL }} /static/css/categoriasOnlyStyle.css">

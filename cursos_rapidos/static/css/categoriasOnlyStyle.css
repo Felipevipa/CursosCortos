@@ -1,0 +1,66 @@
+#categoriasContainer {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	font-size: 20px;
+
+}
+
+.cardInternal {
+	width: 30%;
+	display: flex;
+	flex-direction: column;
+	flex-wrap: wrap;
+	border: solid 1px;
+	border-radius: 5%;
+	margin: 1%;
+	background: linear-gradient(#fff0 0%, #fff0 70%, #1d1d1d 100%);
+}
+
+.cardInternal:hover {
+  background: linear-gradient(45deg,
+  #ff0000 0%, 
+  #ff9a00 10%,
+  #d0de21 20%,
+  #4fdc4a 30%, 
+  #3fdad8 40%,
+  #2fc9e2 50%, 
+  #1c7fee 60%, 
+  #5f15f2 70%, 
+  #ba0cf8 80%, 
+  #fb07d9 90%, 
+  #ff0000 100%  )
+  repeat 0% 0% / 300% 100%;
+  inset: -3px;
+  border-radius: 16px;
+  transform: translateZ(-1px); /*or z-index */
+  animation: animation 6s linear infinite;
+}
+
+@keyframes animation {
+  0% {background-position: 0% 50%;}
+  50% {background-position: 100% 50%;}
+  100% {background-position: 0% 50%;}
+}
+
+.cardInternalImage {
+	width: 100%%;
+	border-top-left-radius: 5%;
+	border-top-right-radius: 5%;
+	overflow: hidden;
+}
+
+.squareThumbnail {
+	width: 100%;
+
+}
+
+.cardInternalContent {
+	display: flex;
+	flex-direction: column;
+	margin: 5%;
+	align-items: flex-start;
+	color: white;
+
+}
+

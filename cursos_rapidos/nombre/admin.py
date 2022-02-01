@@ -14,6 +14,7 @@ admin.site.register(OpcionRespuestaAbierta)
 admin.site.register(Enrolamiento)
 admin.site.register(Tematica)
 admin.site.register(RespuestaUsuarioAbierta)
+admin.site.register(Curso)
 
 
 # @admin.register(EstudianteProfile)

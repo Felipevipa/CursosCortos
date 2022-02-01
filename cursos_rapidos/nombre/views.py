@@ -462,7 +462,7 @@ def agregar_carrera(request):
 	if request.user.groups.filter(name="Docentes").exists():
 		submitted = False
 		if request.method == 'POST':
-			form = CategoriaForm(request.POST)
+			form = CategoriaForm(request.POST, request.FILES)
 			if form.is_valid():
 				form.save()
 				return HttpResponseRedirect('/agregar_carrera?submitted=True')
@@ -568,8 +568,10 @@ def usuario(request):
 
 def home(request):
 	cursos = Curso.objects.filter(is_available=True).order_by('-last_updated')
+	categorias_list = Categoria.objects.all().order_by('nombre')
 
 	context = {
+		'categorias_list': categorias_list,
 		'cursos': cursos,
 		'page_title': "Aprendapp",
 		}

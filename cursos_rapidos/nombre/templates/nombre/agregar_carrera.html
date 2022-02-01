@@ -9,7 +9,7 @@
       Tu carrera fue agregada correctamente
       <a href="{% url 'carreras-detail' %}" class="btn btn-secondary">Volver</a>
     {% else %}
-      <form action="" method="POST">
+      <form action="" method="POST" enctype="multipart/form-data">
       {% csrf_token %}
       {{ form.as_p }}
       <input type="submit" name="" value="Submit" class="btn btn-secondary">

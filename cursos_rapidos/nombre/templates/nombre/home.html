@@ -15,7 +15,7 @@
     </script> 
     <title>{{ page_title }}!</title>
     <style type="text/css">
-      body {background: #f4f4f4;}
+      body {background: #000;}
     </style>
     
   </head>
@@ -86,7 +86,7 @@
           {% if request.user|has_group:"Docentes" %}
           <a href="{% url 'actualizar-tematica' curso.tematica.categoria.nombre curso.tematica.nombre curso.id %}" class="btn btn-outline-secondary">Actualizar</a>
           {% endif %}
-          <a href="{{ curso.get_absolute_url }}" class="btn btn-outline-success"> Entrar</a></p>
+          <a href="{{ curso.get_absolute_url }}" class="btn btn-outline-success"> Entrar</a>
         <p class="card-text"><small class="text-muted">Ultima Actualización: {{ curso.last_updated }}</small></p>
       </div>
     </div>
@@ -95,12 +95,10 @@
 </div>
 {% endfor %}
 </div>
+{% include 'nombre/categoriasOnly.html' %}
       </div>
        <br>
 
-      <div class="container shadow p-4 mb-5 bg-body rounded">
-        <iframe id="encoder_iframe" height="350px" width="100%" src="{% url 'preguntar' %}" ></iframe>
-      </div>
     </div>
 
 
