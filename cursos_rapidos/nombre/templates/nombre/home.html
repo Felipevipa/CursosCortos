@@ -84,7 +84,7 @@
         <p class="card-text">
           
           {% if request.user|has_group:"Docentes" %}
-          <a href="{% url 'actualizar-tematica' curso.tematica.categoria.nombre curso.tematica.nombre curso.id %}" class="btn btn-outline-secondary">Actualizar</a>
+          <a href="{% url 'actualizar-curso' curso.tematica.categoria.nombre curso.tematica.nombre curso.id %}" class="btn btn-outline-secondary">Actualizar</a>
           {% endif %}
           <a href="{{ curso.get_absolute_url }}" class="btn btn-outline-success"> Entrar</a>
         <p class="card-text"><small class="text-muted">Ultima Actualización: {{ curso.last_updated }}</small></p>

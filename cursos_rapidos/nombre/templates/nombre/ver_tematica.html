@@ -2,249 +2,70 @@
 
 {% block content %}
 
-{% load poll_extras %}
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js" integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4" crossorigin="anonymous"></script>
-<a href="../" class="btn btn-secondary d-inline">Volver</a>
-<br><br>
+<br>
 <div class="shadow p-4 mb-5 bg-body rounded">
+<table class="table">
+  <tr>
+    <td><h1>Cursos - {{ materia.nombre }}</h1></td>
+    {% if user.is_authenticated %}
+    {% load poll_extras %}
+    {% if request.user|has_group:"Docentes" %}
+    <td align="center" class="col-2">
+      <a href="{% url 'agregar-curso' materia.categoria materia.nombre %}" class="btn btn-secondary d-inline">Agregar Curso</a>
+    </td>
+    {% endif %}
+    {% endif %}
+  </tr>
+  {% for tematica in tematicas_list %}
+  <tr>
+    <td>
+      <a href="{{ tematica.get_absolute_url }}" class="list-group-item list-group-item-action">
+         {{ tematica.titulo}}
+         </a>
+    </td>
+    {% if user.is_authenticated %}
+    {% load poll_extras %}
+    {% if request.user|has_group:"Docentes" %}
+    <td>
+      <a href="{% url 'actualizar-curso' tematica.tematica.categoria.nombre tematica.tematica.nombre tematica.id %}" class="btn btn-outline-secondary btn-sm">Actualizar</a>
+      <a href="{% url 'eliminar-curso' tematica.tematica.categoria.nombre tematica.tematica.nombre tematica.id %}" class="btn btn-outline-danger btn-sm">Eliminar</a>
+    </td>
+    {% endif %}
+    {% endif %}
+  </tr>
+  {% endfor %} 
+</table>
+</div>
+<a href="../" class="btn btn-secondary d-inline">Volver</a>
 
-<center>
 
-
-{% for material in material_list %}
-<div class="mydivouter dropdown">  
-
-{% if material.titulo %}
-  <h3>{{ material.titulo }}</h3>  
-{% endif %}
-
-{% if material.contenido_de_texto %}
-  <p style="word-wrap: break-word;">{{ material.contenido_de_texto }}</p>
-{% endif %}
-
-{% if material.imagen %}
-  <img src="{{ material.imagen.url }}" class="user-image img-responsive"/ width="100%"> <br>
-{% endif %}
-
-{% if material.video %}
-  <iframe width="560" height="315" src="https://www.youtube.com/embed/{{ material.video }}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe><br>
-{% endif %}
-
-{% if material.materialExterno %}
-  <iframe src="{{ material.materialExterno }}" style="display: hidden; width: 80%; height: 500px" title="description" allowfullscreen></iframe><br>
-{% endif %}
-
-{% if material.quizes %}
-  <div class="card mb-3 border border-success"style="max-width: 540px;"> 
-    <div class="col-sm-6">
-      <div class="card">
-        <div class="card-body">
-          <h5 class="card-title">{{ material.quizes.titulo }}</h5>
-          <p class="card-text"></p>
-          <a href="{{ material.quizes.get_absolute_url }}" class="btn btn-primary">Quiz</a>
-        </div>
+<br><br>
+<div class="row row-cols-1 row-cols-md-2 g-4">
+{% for tematica in tematicas_list %}
+<div class="col">
+<div class="card mb-3 shadow p-4 bg-body rounded" style="max-width: 540px;">
+  <div class="row g-0">
+    <div class="col-md-4 d-flex align-items-center">
+      <img src="{{ tematica.imagen.url }}" class="img-fluid rounded-start" alt="...">
+    </div>
+    <div class="col-md-8">
+      <div class="card-body">
+        <h5 class="card-title">{{ tematica.titulo }}</h5>
+        <h6 class="card-title">{{ tematica.materia.nombre }} - {{ tematica.materia.carrera.nombre }}</h6>
+        <p class="card-text" style="overflow: hidden; height: 150px;">
+          {{ tematica.resumen }}
+        </p>
+        <p class="card-text"><a href="{{ tematica.get_absolute_url }}" class="btn btn-outline-primary"> Entrar</a></p>
+        <p class="card-text"><small class="text-muted">Ultima Actualización: {{ tematica.last_updated }}</small></p>
       </div>
     </div>
   </div>
-{% endif %}
-
-{% load poll_extras %}
-{% if request.user|has_group:"Docentes" %}
-<button type="button" class="mybuttonoverlap btn btn-link dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="font-size : 20px;">+</button>
-<div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="right: 0; left: auto;">
-    <a class="dropdown-item" href="{% url 'actualizar-material' material.curso.tematica.categoria material.curso.tematica.nombre material.curso.id material.id %}">Actualizar</a>
-    <a class="dropdown-item" href="{% url 'eliminar-material' material.curso.tematica.categoria material.curso.tematica.nombre material.curso.id material.id %}">Eliminar</a>
 </div>
-{% endif %}
 </div>
 {% endfor %}
-</center>
-
-
-{% load static %}
-
-{% if user.is_authenticated %}
-{% load poll_extras %}
-{% if request.user|has_group:"Docentes" %}
-<br><br>
-
-<p>
-  <a class="btn btn-primary" data-toggle="collapse" href="#collapseOptions" role="button" aria-expanded="false" aria-controls="collapseOptions">
-    Agregar Material
-  </a>
-</p>
-
-<div class="shadow p-4 mb-5 bg-body rounded collapse" id="collapseOptions">
-  <div class="d-flex justify-content-around">
-  <a class="" data-toggle="collapse" href="#collapseTituloForm" role="button" aria-expanded="false" aria-controls="collapseContent">Agregar Titulo</a>|
-  <a class="" data-toggle="collapse" href="#collapseTextForm" role="button" aria-expanded="false" aria-controls="collapseTextForm">Agregar Texto</a>|
-  <a class="" data-toggle="collapse" href="#collapseImageForm" role="button" aria-expanded="false" aria-controls="collapseImageForm">Agregar Imagen</a>|
-  <a class="" data-toggle="collapse" href="#collapseVideoForm" role="button" aria-expanded="false" aria-controls="collapseVideoForm">Agregar Video</a>|
-  <a class="" data-toggle="collapse" href="#collapseMEForm" role="button" aria-expanded="false" aria-controls="collapseMEForm">Agregar Material Externo</a>|
-  <a href="{% url 'agregar-quiz' tematica.tematica.categoria tematica.tematica.nombre tematica.id  %}" class="">Agregar Quiz</a>
-
-  </div>
-  <div>
-
-    <!--INICIO Formulario para titulo -->
-    <div class="collapse" id="collapseTituloForm">
-      <br>
-      <form action="{{ request.path }}agregar_material" method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form.titulo }}
-        <input type="hidden" name="next" value="{{ request.path }}"><br>
-        <input type="submit" name="" value="Agregar" class="btn btn-secondary">
-      </form>
-    </div>
-    <!--FIN Formulario para agregar titulo -->
-
-
-    <!--INICIO Formulario para agregar texto -->
-    <div class="collapse" id="collapseTextForm">
-      <br>
-      <form action="{{ request.path }}agregar_material" method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form.contenido_de_texto }}
-        <input type="hidden" name="next" value="{{ request.path }}"><br>
-        <input type="submit" name="" value="Agregar" class="btn btn-secondary">
-      </form>
-    </div>
-    <!--FIN Formulario para agregar texto -->
-
-    <!--INICIO Formulario para agregar imagen -->
-    <div class="collapse" id="collapseImageForm">
-      <br>
-      <form action="{{ request.path }}agregar_material" method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form.imagen }}
-        <input type="hidden" name="next" value="{{ request.path }}"><br>
-        <input type="submit" name="" value="Agregar" class="btn btn-secondary">
-      </form>
-    </div>
-    <!--FIN Formulario para agregar imagen -->
-
-    <!--INICIO Formulario para agregar video -->
-    <div class="collapse" id="collapseVideoForm">
-      <br>
-      <form action="{{ request.path }}agregar_material" method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form.video }}
-        <input type="hidden" name="next" value="{{ request.path }}"><br>
-        <input type="submit" name="" value="Agregar" class="btn btn-secondary">
-      </form>
-    </div>
-    <!--FIN Formulario para agregar video -->
-
-    <!--INICIO Formulario para agregar Material Externo -->
-    <div class="collapse" id="collapseMEForm">
-      <br>
-      <form action="{{ request.path }}agregar_material" method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form.materialExterno }}
-        <input type="hidden" name="next" value="{{ request.path }}"><br>
-        <input type="submit" name="" value="Agregar" class="btn btn-secondary">
-      </form>
-    </div>
-    <!--FIN Formulario para agregar Material Externo -->
-
-  </div>
 </div>
-{% endif %}
+<br>
 
-<div class="shadow p-4 mb-5 bg-body rounded collapse" id="collapseContent">
-  <center>
-    <h1> Agregar Material </h1>
-    <br><br>
-    {% if submitted %}
-      Tu Material fue agregado correctamente
-      <a href="../" class="btn btn-secondary">Volver</a>
-      <form>
-          <input type="button" value="No, really, go back!" onclick="history.go(-2)">
-      </form>
-    {% else %}
-      <form action="{{ request.path }}agregar_material" method="POST" enctype="multipart/form-data">
-      {% csrf_token %}
-      {{ form.as_p }}
-      <input type="hidden" name="next" value="{{ request.path }}">
-      <input type="submit" name="" value="Submit" class="btn btn-secondary">
-    </form>
-    
-    {% endif %}
-  </center>
-</div>
-
-
-
-
-
-</div>
-
-{% if request.user|has_group:"Docentes" %}
-<a href="{% url 'agregar-material' tematica.tematica.categoria tematica.tematica tematica.titulo %}" class="btn btn-secondary d-inline">Agregar Material</a>
-{% endif %}
-
-
-<br><br>
-<div class="row row-cols-1 row-cols-md-2 g-2">
-  {% for quiz in quizes %}
-  <!--  <a href="{{ quiz.get_absolute_url }}" class="btn btn-secondary d-inline">Quiz</a> -->
-  <div class="card mb-3 border border-success"style="max-width: 540px;"> 
-    <div class="col-sm-6">
-      <div class="card">
-        <div class="card-body">
-          <h5 class="card-title">{{quiz.titulo}}</h5>
-          <p class="card-text"></p>
-          <a href="{{ quiz.get_absolute_url }}" class="btn btn-primary">Quiz</a>
-        </div>
-      </div>
-    </div>
-  </div>
-  {% endfor %}
-    
-</div>
-
-
-
-{% endif %}
-<style>
-
-.mydivouter {
-    position: relative;
-    top: 0px;
-}
-.mybuttonoverlap{
-    height: 40px;
-    right: 0px;
-    position: absolute;
-    top: 0px;
-    width: 40px;
-    z-index: 1;
-    display: none;
-}
-.mydivouter:hover .mybuttonoverlap{ 
-display:block;
-}
-</style>
-
-
-<script type="text/javascript">
-window.addEventListener("load", startup, false);
-
-function startup() {
-  var body = document.getElementById('div-body');
-  if (body) {
-   body.style.background = 
-     "linear-gradient(to right, " 
-     + "{{ tematica.color1 }}"
-     + ", " 
-     + "{{ tematica.color2 }}"
-     + ")";
-     css.textContent = body.style.background + ";";
-  }
-}
-
-</script>
 
 {% endblock %}
 

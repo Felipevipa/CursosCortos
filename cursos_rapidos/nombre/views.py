@@ -268,7 +268,7 @@ def agregar_material(request, carrera, materia, tematica):
 					material.video = re.split(r"(?ism).*?=(.*?)$", material.video)
 					material.video = material.video[1][0:material.video[1].index('&')]
 				material.save()
-				return redirect('ver-tematica', carrera, materia, curso.id)
+				return redirect('ver-curso', carrera, materia, curso.id)
 				# return redirect('home')
 		else:
 			form = MaterialForm()
@@ -290,7 +290,7 @@ def actualizar_material(request, carrera, materia, tematica, id):
 		form = MaterialForm(request.POST or None, instance=material)
 		if form.is_valid():
 			form.save()
-			return redirect('ver-tematica', carrera, materia, tematica)
+			return redirect('ver-curso', carrera, materia, tematica)
 		context = {
 			'material': material,
 			'form': form,
@@ -308,13 +308,13 @@ def eliminar_material(request, carrera, materia, tematica, id):
 			quiz = Quiz.objects.get(pk=material.quizes.id)
 			quiz.delete()
 		material.delete()
-		return redirect('ver-tematica', carrera, materia, tematica)
+		return redirect('ver-curso', carrera, materia, tematica)
 	else:
 		return redirect('login_requerido')
 
 
 
-def agregar_tematica(request, carrera, materia):
+def agregar_curso(request, carrera, materia):
 	if request.user.groups.filter(name="Docentes").exists():
 
 		submitted = False
@@ -337,32 +337,32 @@ def agregar_tematica(request, carrera, materia):
 		context = {
 			'form': form,
 			'submitted': submitted,
-			'page_title': "Agregar Tematica",
+			'page_title': "Agregar Curso",
 
 		}
-		return render(request, 'nombre/agregar_tematica.html', context)	
+		return render(request, 'nombre/agregar_curso.html', context)	
 	else:
 		return redirect('login_requerido')
 
 
-def actualizar_materia(request, carrera, materia_id):
+def actualizar_tematica(request, carrera, materia_id):
 	if request.user.groups.filter(name="Docentes").exists():
 		tematica = Tematica.objects.get(pk=materia_id)
 		form = TematicaForm(request.POST or None, instance=tematica)
 		if form.is_valid():
 			form.save()
-			return redirect('ver-carrera', carrera)
+			return redirect('ver-categoria', carrera)
 		context = {
 			'materia': tematica,
 			'form': form,
 			'page_title': "Actualizar Tematica",
 		}
-		return render(request, 'nombre/actualizar_materia.html', context)
+		return render(request, 'nombre/actualizar_tematica.html', context)
 	else:
 		return redirect('login_requerido')
 
 
-def actualizar_tematica(request, carrera, materia, tematica_id):
+def actualizar_curso(request, carrera, materia, tematica_id):
 	if request.user.groups.filter(name="Docentes").exists():
 		curso = Curso.objects.get(pk=tematica_id)
 		form = CursoForm(request.POST or None, instance=curso)
@@ -371,14 +371,14 @@ def actualizar_tematica(request, carrera, materia, tematica_id):
 			curso.color1 = request.POST['tematicaColor1']
 			curso.color2 = request.POST['tematicaColor2']
 			curso.save()		
-			return redirect('ver-materia', carrera, materia)
+			return redirect('ver-tematica', carrera, materia)
 
 
 		context = {
 			'carrera': carrera,
 			'materia': materia,
 			'form': form,
-			'page_title': "Actualizar Tematica",
+			'page_title': "Actualizar Curso",
 
 		}
 
@@ -387,20 +387,20 @@ def actualizar_tematica(request, carrera, materia, tematica_id):
 		return redirect('login_requerido')
 
 
-def eliminar_tematica(request, carrera, materia, tematica_id):
+def eliminar_curso(request, carrera, materia, tematica_id):
 	if request.user.groups.filter(name="Docentes").exists():
 		curso = Curso.objects.get(pk=tematica_id)
 		curso.delete()
-		return redirect('ver-materia', carrera, materia)
+		return redirect('ver-tematica', carrera, materia)
 	else:
 		return redirect('login_requerido')
 
 
-def eliminar_materia(request, carrera, materia_id):
+def eliminar_tematica(request, carrera, materia_id):
 	if request.user.groups.filter(name="Docentes").exists():
 		tematica = Tematica.objects.get(pk=materia_id)
 		tematica.delete()
-		return redirect('ver-carrera', carrera)
+		return redirect('ver-categoria', carrera)
 	else:
 		return redirect('login_requerido')
 
@@ -414,7 +414,7 @@ def eliminar_categoria(request, categoria_id):
 		return redirect('login_requerido')
 
 
-def agregar_materia(request, carrera):
+def agregar_tematica(request, carrera):
 	if request.user.groups.filter(name="Docentes").exists():
 		submitted = False
 		if request.method == 'POST':
@@ -435,7 +435,7 @@ def agregar_materia(request, carrera):
 			'form': form,
 			'submitted': submitted,
 		}
-		return render(request, 'nombre/agregar_materia.html', context)
+		return render(request, 'nombre/agregar_tematica.html', context)
 	else:
 		return redirect('login_requerido')
 
@@ -504,7 +504,7 @@ def search_tematica(request):
 	return render(request, 'nombre/search_tematica.html', context)
 
 
-def ver_tematica(request, carrera, materia, id):
+def ver_curso(request, carrera, materia, id):
 	curso = get_object_or_404(Curso, pk=id)
 	material_list = Material.objects.filter(curso=curso)
 	quizes = Quiz.objects.filter(curso=curso)
@@ -515,10 +515,10 @@ def ver_tematica(request, carrera, materia, id):
 		'form': form,
 		'quizes': quizes,
 	}
-	return render(request, "nombre/ver_tematica.html", context)
+	return render(request, "nombre/ver_curso.html", context)
 
 
-def ver_materia(request, carrera, nombre):
+def ver_tematica(request, carrera, nombre):
 	# obj = Carrera.objects.get(nombre=nombre)
 	categoria = get_object_or_404(Categoria, nombre=carrera)
 	tematica = get_object_or_404(Tematica, categoria=categoria, nombre=nombre)
@@ -536,18 +536,18 @@ def ver_materia(request, carrera, nombre):
 		'tematicas_list': cursos_list,
 		'material_list': material_list,
 	}
-	return render(request, "nombre/ver_materia.html", context)
+	return render(request, "nombre/ver_tematica.html", context)
 
 
-def ver_carrera(request, nombre):
+def ver_categoria(request, nombre):
 	# obj = Carrera.objects.get(nombre=nombre)
 	categoria = get_object_or_404(Categoria, nombre=nombre)
 	materias_list = Tematica.objects.filter(categoria=categoria)
 	context = {
-		'carrera': categoria,
+		'categoria': categoria,
 		'materias_list': materias_list,
 	}
-	return render(request, "nombre/ver_carrera.html", context)
+	return render(request, "nombre/ver_categoria.html", context)
 
 
 def categorias_view(request):

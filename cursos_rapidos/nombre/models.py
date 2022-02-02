@@ -19,7 +19,7 @@ class Categoria(models.Model):
         return '%s' % self.nombre
 
     def get_absolute_url(self):
-        return reverse("ver-carrera", kwargs={'nombre': self.nombre})  # f"/products/{self.id}/"
+        return reverse("ver-categoria", kwargs={'nombre': self.nombre})  # f"/products/{self.id}/"
 
 
 class UserProfile(models.Model):
@@ -40,7 +40,7 @@ class Tematica(models.Model):
         return '%s - %s' % (self.nombre, self.categoria)
 
     def get_absolute_url(self):
-        return reverse("ver-materia", kwargs={'carrera': self.categoria, 'nombre': self.nombre})  # f"/products/{self.id}/"
+        return reverse("ver-tematica", kwargs={'carrera': self.categoria, 'nombre': self.nombre})  # f"/products/{self.id}/"
 
 
 
@@ -60,7 +60,7 @@ class Curso(models.Model):
         return '%s - %s' % (self.titulo, self.tematica)
 
     def get_absolute_url(self):
-        return reverse("ver-tematica", kwargs={'carrera': self.tematica.categoria.nombre, 'materia': self.tematica.nombre, 'id': self.id})
+        return reverse("ver-curso", kwargs={'carrera': self.tematica.categoria.nombre, 'materia': self.tematica.nombre, 'id': self.id})
 
 
 class Enrolamiento(models.Model):
