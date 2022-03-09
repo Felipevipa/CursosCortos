@@ -15,6 +15,7 @@ admin.site.register(Enrolamiento)
 admin.site.register(Tematica)
 admin.site.register(RespuestaUsuarioAbierta)
 admin.site.register(Curso)
+admin.site.register(PalabrasClaveRespuestaAbierta)
 
 
 # @admin.register(EstudianteProfile)

@@ -56,14 +56,17 @@
     <div class="info" id="info">
       <h2 style="color:white; position:absolute; top: 120px; width: 30%; left: 10%;">¿Que puedes encontrar con nosotros?</h2>      
       <img src="{% static 'yeison.png' %}" style="height:90%; position:absolute; top: 10%; left: 50%; max-width: 50%;">
+      
     </div>
 
     <div id="div-body" class="content">
-
+    <div class="container" id="categorias">
+      {% include 'nombre/categoriasOnly.html' %}
+    </div>
     <div class="container" id="cursos">
       
       
-      <h1>Cursos disponibles: </h1>
+      <h3 style="color:white;">Cursos disponibles: </h3>
 
 <br><br>
 <div class="row row-cols-1 row-cols-md-2 g-4">
@@ -95,7 +98,7 @@
 </div>
 {% endfor %}
 </div>
-{% include 'nombre/categoriasOnly.html' %}
+
       </div>
        <br>
 

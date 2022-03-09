@@ -1,3 +1,4 @@
+from sys import prefix
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import *
 from .forms import *
@@ -46,7 +47,7 @@ def preguntar(request):
 
 def calificaciones(request):
 	obj = UserProfile.objects.get(user=request.user) 
-	calificaciones = Calificacion.objects.filter(estudiante=obj).order_by('-fecha')
+	calificaciones = Calificacion.objects.filter(userProfile=obj).order_by('-fecha')
 	for calificacion in calificaciones:
 		valor = calificacion.nota
 	
@@ -73,7 +74,7 @@ def calificaciones_chart(request):
 	
 
 
-def quiz(request, carrera, materia, tematica, id):
+def quiz(request, categoria, materia, tematica, id):
 	quiz = Quiz.objects.get(pk=id)
 	if request.method == 'POST':
 		preguntas = Pregunta.objects.filter(quiz=quiz)
@@ -131,7 +132,7 @@ def quiz(request, carrera, materia, tematica, id):
 
 
 
-	if str(quiz.curso.id)  == tematica and  quiz.curso.tematica.nombre == materia and quiz.curso.tematica.categoria.nombre == carrera:
+	if str(quiz.curso.id)  == tematica and  quiz.curso.tematica.nombre == materia and quiz.curso.tematica.categoria.nombre == categoria:
 		preguntas = Pregunta.objects.filter(quiz=quiz)
 		opcionesRespuesta = []
 		for pregunta in preguntas:
@@ -153,7 +154,7 @@ def quiz(request, carrera, materia, tematica, id):
 
 
 
-def agregar_pregunta(request, carrera, materia, tematica, quiz):
+def agregar_pregunta(request, categoria, materia, tematica, quiz):
 	if request.user.groups.filter(name="Docentes").exists():
 		submitted = False
 		if request.method == 'POST':
@@ -165,7 +166,7 @@ def agregar_pregunta(request, carrera, materia, tematica, quiz):
 				pregunta.quiz=quiz
 				pregunta.save()
 				# return HttpResponseRedirect('home')
-				return redirect('quiz', carrera, materia, tematica, quiz.id)
+				return redirect('agregar-respuesta', categoria, materia, tematica, quiz.id, pregunta.id)
 		else:
 			form = PreguntaForm()
 			if 'submitted' in request.GET:
@@ -181,34 +182,63 @@ def agregar_pregunta(request, carrera, materia, tematica, quiz):
 
 
 
-def agregar_respuesta(request, carrera, materia, tematica, quiz, pregunta):
+def agregar_respuesta(request, categoria, materia, tematica, quiz, pregunta):
 	submitted = False
 	pregunta = Pregunta.objects.get(pk=pregunta)
 	answer_type = pregunta.answer_type
+	forms = []
+	checked = []
 	if request.method == 'POST':
 		if answer_type == "1":
-			form = OpcionRespuestaCerradaForm(request.POST)
+			forms.append(OpcionRespuestaCerradaForm(request.POST, prefix="form"))
+			forms.append(OpcionRespuestaCerradaForm(request.POST, prefix="form2"))
+			print(request.POST)
 		elif answer_type == "2":
-			form = OpcionRespuestaAbiertaForm(request.POST)
+			forms.append(OpcionRespuestaAbiertaForm(request.POST, prefix="formRespuesta1"))
+			forms.append(OpcionRespuestaAbiertaForm(request.POST, prefix="formRespuesta2"))
+			forms.append(OpcionRespuestaAbiertaForm(request.POST, prefix="formRespuesta3"))
+			forms.append(OpcionRespuestaAbiertaForm(request.POST, prefix="formRespuesta4"))
+			forms.append(OpcionRespuestaAbiertaForm(request.POST, prefix="formRespuesta5"))
+			forms.append(OpcionRespuestaAbiertaForm(request.POST, prefix="formRespuesta6"))
+
+		for form in forms:
+			if form.is_valid():
+				checked.append(1)
+			else:
+				checked.append(0)
 		
-		if form.is_valid():
-			#form.save()
-			agregar_respuesta= form.save(commit=False)
-			agregar_respuesta.pregunta=pregunta
-			agregar_respuesta.save() 
-			print(pregunta)
-			# return HttpResponseRedirect('home')
-			return redirect('quiz', carrera, materia, tematica, quiz)
+		if 0 not in checked:
+		
+			for form in forms:
+				if form.is_valid():
+					#form.save()
+					agregar_respuesta= form.save(commit=False)
+					agregar_respuesta.pregunta=pregunta
+					agregar_respuesta.save() 
+					print(pregunta)
+					# return HttpResponseRedirect('home')
+
+			return redirect('quiz', categoria, materia, tematica, quiz)
+		
+
 	else:
 		if answer_type == "1":
-			form = OpcionRespuestaCerradaForm()
+			forms.append(OpcionRespuestaCerradaForm(prefix="form"))
+			forms.append(OpcionRespuestaCerradaForm(prefix="form2"))
 		elif answer_type == "2":
-			form = OpcionRespuestaAbiertaForm()
+			forms.append(OpcionRespuestaAbiertaForm(prefix="formRespuesta1"))
+			forms.append(OpcionRespuestaAbiertaForm(prefix="formRespuesta2"))
+			forms.append(OpcionRespuestaAbiertaForm(prefix="formRespuesta3"))
+			forms.append(OpcionRespuestaAbiertaForm(prefix="formRespuesta4"))
+			forms.append(OpcionRespuestaAbiertaForm(prefix="formRespuesta5"))
+			forms.append(OpcionRespuestaAbiertaForm(prefix="formRespuesta6"))
 		if 'submitted' in request.GET:
 			submitted = True
 
+			
+
 	context = {
-		'form': form,
+		"forms": forms,
 		'submitted': submitted,
 	}
 	return render(request, 'nombre/agregar_respuesta.html', context)
@@ -216,7 +246,7 @@ def agregar_respuesta(request, carrera, materia, tematica, quiz, pregunta):
 
 
 
-def agregar_quiz(request, carrera, materia, tematica):
+def agregar_quiz(request, categoria, materia, tematica):
 	if request.user.groups.filter(name="Docentes").exists():
 		submitted = False
 		if request.method == 'POST':
@@ -233,7 +263,7 @@ def agregar_quiz(request, carrera, materia, tematica):
 				material.save()
 				print(quiz.id)
 				# return HttpResponseRedirect('home')
-				return redirect('quiz', carrera, materia, curso.id, quiz.id)
+				return redirect('quiz', categoria, materia, curso.id, quiz.id)
 
 		else:
 			form = QuizForm()
@@ -251,7 +281,7 @@ def agregar_quiz(request, carrera, materia, tematica):
 
 
 
-def agregar_material(request, carrera, materia, tematica):
+def agregar_material(request, categoria, materia, tematica):
 	if request.user.groups.filter(name="Docentes").exists():
 		submitted = False
 		if request.method == 'POST':
@@ -268,7 +298,7 @@ def agregar_material(request, carrera, materia, tematica):
 					material.video = re.split(r"(?ism).*?=(.*?)$", material.video)
 					material.video = material.video[1][0:material.video[1].index('&')]
 				material.save()
-				return redirect('ver-curso', carrera, materia, curso.id)
+				return redirect('ver-curso', categoria, materia, curso.id)
 				# return redirect('home')
 		else:
 			form = MaterialForm()
@@ -284,13 +314,13 @@ def agregar_material(request, carrera, materia, tematica):
 		return redirect('login_requerido')
 
 
-def actualizar_material(request, carrera, materia, tematica, id):
+def actualizar_material(request, categoria, materia, tematica, id):
 	if request.user.groups.filter(name="Docentes").exists():
 		material = Material.objects.get(pk=id)
 		form = MaterialForm(request.POST or None, instance=material)
 		if form.is_valid():
 			form.save()
-			return redirect('ver-curso', carrera, materia, tematica)
+			return redirect('ver-curso', categoria, materia, tematica)
 		context = {
 			'material': material,
 			'form': form,
@@ -301,20 +331,20 @@ def actualizar_material(request, carrera, materia, tematica, id):
 		return redirect('login_requerido')
 
 
-def eliminar_material(request, carrera, materia, tematica, id):
+def eliminar_material(request, categoria, materia, tematica, id):
 	if request.user.groups.filter(name="Docentes").exists():
 		material = Material.objects.get(pk=id)
 		if material.quizes:
 			quiz = Quiz.objects.get(pk=material.quizes.id)
 			quiz.delete()
 		material.delete()
-		return redirect('ver-curso', carrera, materia, tematica)
+		return redirect('ver-curso', categoria, materia, tematica)
 	else:
 		return redirect('login_requerido')
 
 
 
-def agregar_curso(request, carrera, materia):
+def agregar_curso(request, categoria, materia):
 	if request.user.groups.filter(name="Docentes").exists():
 
 		submitted = False
@@ -345,13 +375,13 @@ def agregar_curso(request, carrera, materia):
 		return redirect('login_requerido')
 
 
-def actualizar_tematica(request, carrera, materia_id):
+def actualizar_tematica(request, categoria, materia_id):
 	if request.user.groups.filter(name="Docentes").exists():
 		tematica = Tematica.objects.get(pk=materia_id)
 		form = TematicaForm(request.POST or None, instance=tematica)
 		if form.is_valid():
 			form.save()
-			return redirect('ver-categoria', carrera)
+			return redirect('ver-categoria', categoria)
 		context = {
 			'materia': tematica,
 			'form': form,
@@ -362,7 +392,7 @@ def actualizar_tematica(request, carrera, materia_id):
 		return redirect('login_requerido')
 
 
-def actualizar_curso(request, carrera, materia, tematica_id):
+def actualizar_curso(request, categoria, materia, tematica_id):
 	if request.user.groups.filter(name="Docentes").exists():
 		curso = Curso.objects.get(pk=tematica_id)
 		form = CursoForm(request.POST or None, instance=curso)
@@ -371,11 +401,11 @@ def actualizar_curso(request, carrera, materia, tematica_id):
 			curso.color1 = request.POST['tematicaColor1']
 			curso.color2 = request.POST['tematicaColor2']
 			curso.save()		
-			return redirect('ver-tematica', carrera, materia)
+			return redirect('ver-tematica', categoria, materia)
 
 
 		context = {
-			'carrera': carrera,
+			'carrera': categoria,
 			'materia': materia,
 			'form': form,
 			'page_title': "Actualizar Curso",
@@ -387,20 +417,20 @@ def actualizar_curso(request, carrera, materia, tematica_id):
 		return redirect('login_requerido')
 
 
-def eliminar_curso(request, carrera, materia, tematica_id):
+def eliminar_curso(request, categoria, materia, tematica_id):
 	if request.user.groups.filter(name="Docentes").exists():
 		curso = Curso.objects.get(pk=tematica_id)
 		curso.delete()
-		return redirect('ver-tematica', carrera, materia)
+		return redirect('ver-tematica', categoria, materia)
 	else:
 		return redirect('login_requerido')
 
 
-def eliminar_tematica(request, carrera, materia_id):
+def eliminar_tematica(request, categoria, materia_id):
 	if request.user.groups.filter(name="Docentes").exists():
 		tematica = Tematica.objects.get(pk=materia_id)
 		tematica.delete()
-		return redirect('ver-categoria', carrera)
+		return redirect('ver-categoria', categoria)
 	else:
 		return redirect('login_requerido')
 
@@ -414,7 +444,7 @@ def eliminar_categoria(request, categoria_id):
 		return redirect('login_requerido')
 
 
-def agregar_tematica(request, carrera):
+def agregar_tematica(request, categoria):
 	if request.user.groups.filter(name="Docentes").exists():
 		submitted = False
 		if request.method == 'POST':
@@ -422,10 +452,10 @@ def agregar_tematica(request, carrera):
 			
 			if form.is_valid():
 				form.save()
-				print(carrera)
+				print(categoria)
 				return HttpResponseRedirect('?submitted=True')
 		else:
-			categoria = Categoria.objects.get(nombre=carrera)
+			categoria = Categoria.objects.get(nombre=categoria)
 			# form = MateriaForm({'carrera': carrera})
 			form = TematicaForm(initial={'carrera': categoria})
 			if 'submitted' in request.GET:
@@ -486,10 +516,10 @@ def search_tematica(request):
 	}
 	if request.method == 'POST':
 		searched = request.POST['searched']
-		tematicas = Tematica.objects.filter(titulo__contains=searched)
+		tematicas = Curso.objects.filter(titulo__contains=searched)
 		material_list = []
 		for tematica in tematicas:
-			material = Material.objects.filter(tematica=tematica)
+			material = Material.objects.filter(curso=tematica)
 			for mater in material:
 				material_list.append((tematica.titulo, mater))
 
@@ -504,7 +534,7 @@ def search_tematica(request):
 	return render(request, 'nombre/search_tematica.html', context)
 
 
-def ver_curso(request, carrera, materia, id):
+def ver_curso(request, categoria, materia, id):
 	curso = get_object_or_404(Curso, pk=id)
 	material_list = Material.objects.filter(curso=curso)
 	quizes = Quiz.objects.filter(curso=curso)
@@ -518,9 +548,9 @@ def ver_curso(request, carrera, materia, id):
 	return render(request, "nombre/ver_curso.html", context)
 
 
-def ver_tematica(request, carrera, nombre):
+def ver_tematica(request, categoria, nombre):
 	# obj = Carrera.objects.get(nombre=nombre)
-	categoria = get_object_or_404(Categoria, nombre=carrera)
+	categoria = get_object_or_404(Categoria, nombre=categoria)
 	tematica = get_object_or_404(Tematica, categoria=categoria, nombre=nombre)
 	cursos_list = Curso.objects.filter(tematica=tematica)
 	material_list = []

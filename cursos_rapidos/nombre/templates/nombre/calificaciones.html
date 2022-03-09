@@ -18,7 +18,7 @@
         <tr>  
         {% for calificacion in calificaciones|dictsort:"nota" %}
             <td>
-                {{ calificacion.quiz.tematica.titulo }}
+                {{ calificacion.quiz.curso.titulo }}
             </td>
             <td>
                 {{ calificacion.quiz.titulo }} 

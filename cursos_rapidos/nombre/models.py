@@ -40,7 +40,7 @@ class Tematica(models.Model):
         return '%s - %s' % (self.nombre, self.categoria)
 
     def get_absolute_url(self):
-        return reverse("ver-tematica", kwargs={'carrera': self.categoria, 'nombre': self.nombre})  # f"/products/{self.id}/"
+        return reverse("ver-tematica", kwargs={'categoria': self.categoria, 'nombre': self.nombre})  # f"/products/{self.id}/"
 
 
 
@@ -60,7 +60,7 @@ class Curso(models.Model):
         return '%s - %s' % (self.titulo, self.tematica)
 
     def get_absolute_url(self):
-        return reverse("ver-curso", kwargs={'carrera': self.tematica.categoria.nombre, 'materia': self.tematica.nombre, 'id': self.id})
+        return reverse("ver-curso", kwargs={'categoria': self.tematica.categoria.nombre, 'materia': self.tematica.nombre, 'id': self.id})
 
 
 class Enrolamiento(models.Model):
@@ -75,7 +75,7 @@ class Quiz(models.Model):
     curso       = models.ForeignKey(Curso, on_delete=models.SET_NULL, null=True)
 
     def get_absolute_url(self):
-        return reverse("quiz", kwargs={'carrera': self.curso.tematica.categoria, 'materia': self.curso.tematica.nombre, 'tematica': self.curso.id, 'id': self.id,})
+        return reverse("quiz", kwargs={'categoria': self.curso.tematica.categoria, 'materia': self.curso.tematica.nombre, 'tematica': self.curso.id, 'id': self.id,})
 
 
 class Material(models.Model):
@@ -121,6 +121,20 @@ class OpcionRespuestaCerrada(models.Model):
 class OpcionRespuestaAbierta(models.Model):
     respuesta           = models.TextField(null=True, blank=True)
     pregunta            = models.ForeignKey(Pregunta, on_delete=models.SET_NULL, null=True)
+    valoracion          = models.IntegerField()
+
+
+class PalabrasClaveRespuestaAbierta(models.Model):
+
+    palabra = models.CharField(max_length=50)
+    
+    class Meta:
+        verbose_name = "PalabrasClaveRespuestaAbierta"
+        verbose_name_plural = "PalabrasClaveRespuestaAbiertas"
+
+    def __str__(self):
+        return self.palabra
+
 
 
 class RespuestaUsuarioAbierta(models.Model):
