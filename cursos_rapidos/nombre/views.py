@@ -200,6 +200,12 @@ def agregar_respuesta(request, categoria, materia, tematica, quiz, pregunta):
 			forms.append(OpcionRespuestaAbiertaForm(request.POST, prefix="formRespuesta4"))
 			forms.append(OpcionRespuestaAbiertaForm(request.POST, prefix="formRespuesta5"))
 			forms.append(OpcionRespuestaAbiertaForm(request.POST, prefix="formRespuesta6"))
+			forms.append(PalabrasClaveRespuestaAbiertaForm(request.POST, prefix="formPalabraClave1"))
+			forms.append(PalabrasClaveRespuestaAbiertaForm(request.POST, prefix="formPalabraClave2"))
+			forms.append(PalabrasClaveRespuestaAbiertaForm(request.POST, prefix="formPalabraClave3"))
+			forms.append(PalabrasClaveRespuestaAbiertaForm(request.POST, prefix="formPalabraClave4"))
+			forms.append(PalabrasClaveRespuestaAbiertaForm(request.POST, prefix="formPalabraClave5"))
+
 
 		for form in forms:
 			if form.is_valid():
@@ -232,6 +238,11 @@ def agregar_respuesta(request, categoria, materia, tematica, quiz, pregunta):
 			forms.append(OpcionRespuestaAbiertaForm(prefix="formRespuesta4"))
 			forms.append(OpcionRespuestaAbiertaForm(prefix="formRespuesta5"))
 			forms.append(OpcionRespuestaAbiertaForm(prefix="formRespuesta6"))
+			forms.append(PalabrasClaveRespuestaAbiertaForm(prefix="formPalabraClave1"))
+			forms.append(PalabrasClaveRespuestaAbiertaForm(prefix="formPalabraClave2"))
+			forms.append(PalabrasClaveRespuestaAbiertaForm(prefix="formPalabraClave3"))
+			forms.append(PalabrasClaveRespuestaAbiertaForm(prefix="formPalabraClave4"))
+			forms.append(PalabrasClaveRespuestaAbiertaForm(prefix="formPalabraClave5"))
 		if 'submitted' in request.GET:
 			submitted = True
 

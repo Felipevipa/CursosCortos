@@ -120,13 +120,14 @@ class OpcionRespuestaCerrada(models.Model):
 
 class OpcionRespuestaAbierta(models.Model):
     respuesta           = models.TextField(null=True, blank=True)
-    pregunta            = models.ForeignKey(Pregunta, on_delete=models.SET_NULL, null=True)
+    pregunta            = models.ForeignKey(Pregunta, on_delete=models.CASCADE, null=True)
     valoracion          = models.IntegerField()
 
 
 class PalabrasClaveRespuestaAbierta(models.Model):
 
-    palabra = models.CharField(max_length=50)
+    palabra  = models.CharField(max_length=50)
+    pregunta = models.ForeignKey(Pregunta, on_delete=models.CASCADE, null=True)
     
     class Meta:
         verbose_name = "PalabrasClaveRespuestaAbierta"

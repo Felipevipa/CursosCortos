@@ -16,6 +16,18 @@ class RespuestaUsuarioAbiertaForm(forms.ModelForm):
 		exclude = ['pregunta']
 
 
+class PalabrasClaveRespuestaAbiertaForm(forms.ModelForm):
+	class Meta:
+		model = PalabrasClaveRespuestaAbierta
+		exclude = {'pregunta'}
+		labels = {
+			'palabra': '',
+		}
+		widgets = {
+			'palabra': forms.TextInput(attrs={'class':'form-control', 'placeholder':'Palabra clave',}),
+		}
+
+
 
 class OpcionRespuestaAbiertaForm(forms.ModelForm):
 	
