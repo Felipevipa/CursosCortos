@@ -88,6 +88,21 @@ def quiz(request, categoria, materia, tematica, id):
 
 			if pregunta.answer_type == '2':
 				respuestaEstudiante = request.POST[str(pregunta.id)]
+				posiblesRespuestasQuerySet = OpcionRespuestaAbierta.objects.filter(pregunta=pregunta)
+				posiblesRespuestas = []
+				for posibleRespuesta in posiblesRespuestasQuerySet:
+					posiblesRespuestas.append([posibleRespuesta.respuesta, posibleRespuesta.valoracion/10])
+
+
+				palabrasClaveQuerySet = PalabrasClaveRespuestaAbierta.objects.filter(pregunta=pregunta)
+				palabrasClave = []
+				for palabraClave in palabrasClaveQuerySet:
+					palabrasClave.append(palabraClave.palabra)
+				
+				
+
+
+
 				form = RespuestaUsuarioAbiertaForm()
 				respuestaAbierta = form.save(commit=False)
 				respuestaAbierta.respuesta = respuestaEstudiante
@@ -97,11 +112,15 @@ def quiz(request, categoria, materia, tematica, id):
 				print(respuestaEstudiante)
 
 				# Procesando respuesta en api para recibir nota
-				url = 'http://127.0.0.1:4001/calificarpreguntaabierta'
+				url = 'http://172.16.26.160:4000/calificaciones'
 				apiContext = {
-							    "pregunta": pregunta.enunciado,
-							    "respuesta": respuestaEstudiante
+								"pregunta": pregunta.enunciado,
+							    "list": posiblesRespuestas,
+							    "claves": palabrasClave,
+								"resp": respuestaEstudiante
 							 }
+				
+				print(apiContext)
 
 				r = requests.post(url, json = apiContext)
 
@@ -113,9 +132,11 @@ def quiz(request, categoria, materia, tematica, id):
 					respuesta = data["calificacion"]
 					print(data)
 					acum += respuesta/5
+					
 
 
 		nota = acum * (50/len(preguntas))
+		print(nota)
 		current_time = datetime.now().strftime("%H:%M:%S")
 		tiempo = datetime.strptime(current_time, '%H:%M:%S') - datetime.strptime(request.session['tiempoquiz'], '%H:%M:%S')
 
