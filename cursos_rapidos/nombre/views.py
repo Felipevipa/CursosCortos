@@ -388,7 +388,15 @@ def agregar_curso(request, categoria, materia):
 				curso = form.save(commit=False)
 				curso.color1 = request.POST['tematicaColor1']
 				curso.color2 = request.POST['tematicaColor2']
-				curso.save()				
+				curso.save()
+
+				enrolamiento = EnrolamientoForm()
+				enrolamiento = enrolamiento.save(commit=False)
+				enrolamiento.userProfile = UserProfile.objects.get(user=request.user)
+				enrolamiento.curso = curso
+				enrolamiento.isCreator = True
+				enrolamiento.isEnroled = False
+				enrolamiento.save()
 				return HttpResponseRedirect('?submitted=True')
 		else:
 			tematica = Tematica.objects.get(nombre=materia)

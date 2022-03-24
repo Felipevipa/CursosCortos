@@ -3,6 +3,11 @@ import datetime
 from .models import *
 
 
+class EnrolamientoForm(forms.ModelForm):
+	class Meta:
+		model = Enrolamiento
+		fields = '__all__'
+
 
 class CalificacionForm(forms.ModelForm):
 	class Meta:
