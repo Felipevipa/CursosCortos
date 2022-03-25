@@ -649,11 +649,17 @@ def usuario(request):
 
 def home(request):
 	cursos = Curso.objects.filter(is_available=True).order_by('-last_updated')
+	cursosConCreador = []
+	for curso in cursos:
+		creador = Enrolamiento.objects.get(curso=curso, isCreator=True).userProfile
+		cursosConCreador.append([curso, creador])
+
 	categorias_list = Categoria.objects.all().order_by('nombre')
 
 	context = {
 		'categorias_list': categorias_list,
 		'cursos': cursos,
+		'cursosConCreador':cursosConCreador,
 		'page_title': "Aprendapp",
 		}
 	return render(request, 'nombre/home.html', context)
