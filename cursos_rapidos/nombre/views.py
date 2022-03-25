@@ -433,15 +433,22 @@ def actualizar_tematica(request, categoria, materia_id):
 
 
 def actualizar_curso(request, categoria, materia, tematica_id):
-	if request.user.groups.filter(name="Docentes").exists():
+	if request.user.groups.filter(name="Partners").exists():
 		curso = Curso.objects.get(pk=tematica_id)
-		form = CursoForm(request.POST or None, instance=curso)
-		if form.is_valid():
-			curso = form.save(commit=False)
-			curso.color1 = request.POST['tematicaColor1']
-			curso.color2 = request.POST['tematicaColor2']
-			curso.save()		
-			return redirect('ver-tematica', categoria, materia)
+		enrolamiento = Enrolamiento.objects.get(curso=curso)
+		userProfile = enrolamiento.userProfile
+		user = userProfile.user
+		if request.user == user and enrolamiento.isCreator:
+			form = CursoForm(request.POST or None, instance=curso)
+			if form.is_valid():
+				curso = form.save(commit=False)
+				curso.color1 = request.POST['tematicaColor1']
+				curso.color2 = request.POST['tematicaColor2']
+				curso.save()		
+				return redirect('ver-tematica', categoria, materia)
+		
+		else:
+			return redirect('login_requerido')
 
 
 		context = {
@@ -452,15 +459,19 @@ def actualizar_curso(request, categoria, materia, tematica_id):
 
 		}
 
-		return render(request, 'nombre/agregar_tematica.html', context)
+		return render(request, 'nombre/agregar_curso.html', context)
 	else:
 		return redirect('login_requerido')
 
 
 def eliminar_curso(request, categoria, materia, tematica_id):
-	if request.user.groups.filter(name="Docentes").exists():
+	if request.user.groups.filter(name="Partners").exists():
 		curso = Curso.objects.get(pk=tematica_id)
-		curso.delete()
+		enrolamiento = Enrolamiento.objects.get(curso=curso)
+		userProfile = enrolamiento.userProfile
+		user = userProfile.user
+		if request.user == user and enrolamiento.isCreator:
+			curso.delete()
 		return redirect('ver-tematica', categoria, materia)
 	else:
 		return redirect('login_requerido')
