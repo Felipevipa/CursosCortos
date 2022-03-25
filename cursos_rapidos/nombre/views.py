@@ -435,10 +435,14 @@ def actualizar_tematica(request, categoria, materia_id):
 def actualizar_curso(request, categoria, materia, tematica_id):
 	if request.user.groups.filter(name="Partners").exists():
 		curso = Curso.objects.get(pk=tematica_id)
-		enrolamiento = Enrolamiento.objects.get(curso=curso, user=request.user)
-		userProfile = enrolamiento.userProfile
-		user = userProfile.user
-		if request.user == user and enrolamiento.isCreator:
+		userProfile = UserProfile.objects.get(user=request.user)
+		try:
+			enrolamiento = Enrolamiento.objects.get(curso=curso, userProfile=userProfile)
+		except:
+			return redirect('login_requerido')
+
+
+		if enrolamiento.isCreator:
 			form = CursoForm(request.POST or None, instance=curso)
 			if form.is_valid():
 				curso = form.save(commit=False)
@@ -467,10 +471,13 @@ def actualizar_curso(request, categoria, materia, tematica_id):
 def eliminar_curso(request, categoria, materia, tematica_id):
 	if request.user.groups.filter(name="Partners").exists():
 		curso = Curso.objects.get(pk=tematica_id)
-		enrolamiento = Enrolamiento.objects.get(curso=curso, user=request.user)
-		userProfile = enrolamiento.userProfile
-		user = userProfile.user
-		if request.user == user and enrolamiento.isCreator:
+		userProfile = UserProfile.objects.get(user=request.user)
+		try:
+			enrolamiento = Enrolamiento.objects.get(curso=curso, userProfile=userProfile)
+		except:
+			return redirect('login_requerido')
+
+		if enrolamiento.isCreator:
 			curso.delete()
 		return redirect('ver-tematica', categoria, materia)
 	else:
