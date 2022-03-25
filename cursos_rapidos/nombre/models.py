@@ -64,8 +64,8 @@ class Curso(models.Model):
 
 
 class Enrolamiento(models.Model):
-    userProfile   = models.ForeignKey(UserProfile, on_delete=models.SET_NULL, null=True)
-    curso         = models.ForeignKey(Curso, on_delete=models.SET_NULL, null=True)
+    userProfile   = models.ForeignKey(UserProfile, on_delete=models.CASCADE, null=True)
+    curso         = models.ForeignKey(Curso, on_delete=models.CASCADE, null=True)
     isCreator     = models.BooleanField(default=False)
     isEnroled     = models.BooleanField(default=False)
 

@@ -11,7 +11,7 @@
     {% load poll_extras %}
     {% if request.user|has_group:"Docentes" %}
     <td align="center" class="col-2">
-      <a href="{% url 'agregar-curso' materia.categoria materia.nombre %}" class="btn btn-secondary d-inline">Agregar Curso</a>
+      <a href="{% url 'agregar-curso' materia.categoria materia.nombre %}" class="btn btn-secondary">Agregar Curso</a>
     </td>
     {% endif %}
     {% endif %}
