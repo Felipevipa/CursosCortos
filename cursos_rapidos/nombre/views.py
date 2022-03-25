@@ -435,7 +435,7 @@ def actualizar_tematica(request, categoria, materia_id):
 def actualizar_curso(request, categoria, materia, tematica_id):
 	if request.user.groups.filter(name="Partners").exists():
 		curso = Curso.objects.get(pk=tematica_id)
-		enrolamiento = Enrolamiento.objects.get(curso=curso)
+		enrolamiento = Enrolamiento.objects.get(curso=curso, user=request.user)
 		userProfile = enrolamiento.userProfile
 		user = userProfile.user
 		if request.user == user and enrolamiento.isCreator:
@@ -467,7 +467,7 @@ def actualizar_curso(request, categoria, materia, tematica_id):
 def eliminar_curso(request, categoria, materia, tematica_id):
 	if request.user.groups.filter(name="Partners").exists():
 		curso = Curso.objects.get(pk=tematica_id)
-		enrolamiento = Enrolamiento.objects.get(curso=curso)
+		enrolamiento = Enrolamiento.objects.get(curso=curso, user=request.user)
 		userProfile = enrolamiento.userProfile
 		user = userProfile.user
 		if request.user == user and enrolamiento.isCreator:
