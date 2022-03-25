@@ -32,7 +32,7 @@
           {% if user.is_authenticated %}
 
           <li>
-              <a class="dropdown-item" href="{% url 'user-detail' %}">Ver perfil</a>
+              <a class="dropdown-item" href="{% url 'user-detail' user.username %}">Ver perfil</a>
           </li>
           
           <li>

@@ -31,6 +31,9 @@ class UserProfile(models.Model):
     def __str__(self):
         return '%s %s' % (self.user.first_name, self.user.last_name)
 
+    def get_absolute_url(self):
+        return reverse("user-detail", kwargs={'usuario': self.user.username})
+
 
 class Tematica(models.Model):
     nombre = models.CharField(max_length=40)

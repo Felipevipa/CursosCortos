@@ -46,7 +46,7 @@
     <h2 style="color:white; position:relative; top: 120px; width: 30%; left: 70%;">Empieza a aprender como tu quieras...</h2>
 
     {% if user.is_authenticated %}
-    <a href="{% url 'user-detail' %}" class="btn btn-outline-success" style="color:white; position:relative; top: 140px; width: 20%; left: 70%;"> Continuar a mi area</a>
+    <a href="{% url 'user-detail' user.username %}" class="btn btn-outline-success" style="color:white; position:relative; top: 140px; width: 20%; left: 70%;"> Continuar a mi area</a>
     {% else %}
     <a href="{% url 'login' %}" class="btn btn-outline-success" style="color:white; position:relative; top: 140px; width: 20%; left: 70%;"> Entrar</a>
     <p class="" style="color:white; position:relative; top: 160px; width: 20%; left: 70%;"> ¿Eres nuevo por aqui? <a href="{% url 'registrar-estudiante' %}" class="" style="color:white;"> Registrate</a></p>
@@ -74,7 +74,7 @@
 <div class="col">
 <div class="card mb-3 border border-success" style="max-width: 540px;">
   <div style="position: absolute; top: 12px; right: 8px; width: 60px; height: 60px;">
-    <img src={{creador.foto.url}} style="max-width: 100%; max-height: 100%;">
+    <a href="{% url 'user-detail' creador.user.username %}"><img src={{creador.foto.url}} style="max-width: 100%; max-height: 100%;"><a/>
   </div>
   <div class="row g-0">
     <div class="col-md-4 d-flex align-items-center">

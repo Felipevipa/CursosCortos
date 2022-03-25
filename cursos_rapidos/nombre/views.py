@@ -640,9 +640,9 @@ def categorias_view(request):
 	return render(request, "nombre/categorias_list.html", context)
 
 
-def usuario(request):
-	print(request.user.groups.filter(name="Estudiantes").exists())
-	obj = UserProfile.objects.get(user=request.user)
+def usuario(request, usuario):
+	user = User.objects.get(username = usuario)
+	obj = UserProfile.objects.get(user=user)
 	context = {"object": obj,}
 	return render(request, "nombre/ver_perfil.html", context)
 
